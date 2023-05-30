@@ -44,8 +44,8 @@ export const SignIn = (props: ISignIn) => {
 						err.reason === 'Incorrect password'
 							? 'Email ou senha inválidos'
 							: err.reason === 'User not found'
-							? 'Este email não está cadastrado em nossa base de dados.'
-							: ''
+								? 'Este email não está cadastrado em nossa base de dados.'
+								: ''
 				});
 			} else {
 				showNotification({

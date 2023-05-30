@@ -25,7 +25,7 @@ const HomeIconButton = ({ navigate }: any) => {
 	);
 };
 
-interface IAppNavBar extends ILayoutProps {}
+interface IAppNavBar extends ILayoutProps { }
 
 export const AppNavBar = (props: IAppNavBar) => {
 	const navigate = useNavigate();
