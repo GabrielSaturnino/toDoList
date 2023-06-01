@@ -49,7 +49,7 @@ const MeuModuloList = () => {
 					<Button sx={meuModuloStyles.buttonToTask} variant={'contained'} color={'primary'}
 						onClick={() => setRedirect(true)}>Ir para Tarefas &gt;&gt;</Button>
 				</Box>
-				{redirect && <Navigate to={'/meuModulo'} />}
+				{redirect && <Navigate to={'/toDos'} />}
 			</Container>
 		</>
 	);

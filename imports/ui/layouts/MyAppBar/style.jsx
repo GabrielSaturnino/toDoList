@@ -14,7 +14,8 @@ export const MyAppBarStyle = {
         fontWeight: 900,
         fontSize: '1.875rem',
         lineHeight: '35px',
-        textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'
+        textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+        cursor: 'pointer',
     },
     boxIcons: {
         cursor: 'pointer'
