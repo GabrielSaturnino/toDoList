@@ -21,66 +21,82 @@ const signinStyle = {
 	},
 	subContainerSignIn: {
 		display: 'flex',
+		height: '100vh',
 		flexDirection: 'column',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		lineHeight: '70.21px'
 	},
 	labelAccessSystem: {
 		textAlign: 'center',
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'center',
-		alignItems: 'center'
+		fontFamily: 'Roboto',
+		fontWeight: 900,
+		fontSize: '3.75rem'
 	},
-	imageLogo: {
-		backgroundColor: '#ff9937',
-		maxWidth: 100,
-		borderRadius: 30,
-		padding: 5
+	containerSubtitle: {
+		height: '91px',
+		marginTop: '36px',
 	},
-	containerButtonOptions: {
-		display: 'flex',
-		flexDirection: 'row',
-		justifyContent: 'space-between'
+	containerTextSubtitle: {
+		textAlign: 'center',
+		fontFamily: 'Roboto',
+		fontWeight: 400,
+		fontSize: '1.12rem',
+		lineHeight: '12.5px'
 	},
-	containerSocialLoginButton: {
-		width: '100%',
-		display: 'flex',
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center',
-		height: 50,
-		color: '#FFF'
-	},
-	socialLoginButtonText: {
-		marginLeft: 15
-	},
-	containerRouterSignUp: {
-		marginTop: 15
-	},
-	containerLoginOptions: {
-		paddingRight: 5,
-		width: '102%',
-		margin: 0,
-		padding: 0,
+	inputsBox: {
+		width: '577px',
 		display: 'flex',
 		flexDirection: 'column'
 	},
-	containerButtonGoogle: {
-		width: '100%'
-	},
-	containerButtonFacebook: {
-		width: '100%'
-	},
-	buttonLoginGoogle: {
-		background: '#dd4b39',
+	inputs: {
 		width: '100%',
-		cursor: 'pointer'
+		marginBottom: '22px',
+		color: 'black'
 	},
-	buttonLoginFacebook: {
-		background: '#3B5998',
+	inputsComShadow: {
 		width: '100%',
-		cursor: 'pointer'
+		marginBottom: '22px',
+		color: 'black',
+		boxShadow: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))'
+	},
+	buttonEntrar: {
+		marginTop: '14px',
+		width: '278px',
+		height: '50px',
+		alignSelf: 'center',
+		backGround: '#C4C4C4',
+		borderRadius: '10px',
+		color: 'black',
+		fontFamily: 'Roboto',
+		fontWeight: 700,
+		fontSize: '1.12rem',
+	},
+	boxFinal: {
+		marginTop: '90px',
+		textAlign: 'center',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		height: '58px',
+	},
+	boxFinalTypograph: {
+		fontFamily: 'Roboto',
+		fontWright: 500,
+		fontSize: '1rem',
+		lineHeight: '18.75px',
+		color: '#000000',
+		fontWeight: 500,
+	},
+	boxFinalBtn: {
+		fontFamily: 'Roboto',
+		fontWeight: 500,
+		fontSize: '1rem',
+		lineHeight: '18.75px',
+		color: '#000000',
+		textDecoration: 'underline',
+		cursor: 'pointer',
 	}
 };
 

@@ -6,7 +6,6 @@ import { AppRouterSwitch } from './AppRouterSwitch';
 import { fixedMenuLayoutStyle } from './FixedMenuLayoutStyle';
 import { ILayoutProps } from '/imports/typings/BoilerplateDefaultTypings';
 import Box from '@mui/material/Box';
-import { AppTopMenu } from './components/AppTopMenu';
 
 interface FixedMenuLayoutContextType {
 	handleOcultarAppBar: () => void;
@@ -25,7 +24,7 @@ export const FixedMenuLayout = (props: ILayoutProps) => {
 	};
 
 	const handleExibirAppBar = () => {
-		setShowAppBar(true);
+		setShowAppBar(false);
 	};
 
 	return (
@@ -36,7 +35,6 @@ export const FixedMenuLayout = (props: ILayoutProps) => {
 						...fixedMenuLayoutStyle.containerAppRouter,
 						backgroundColor: theme.palette.background.default
 					}}>
-					<AppTopMenu {...props} />
 
 					{showAppBar && !isMobile && <AppNavBar {...props} />}
 					<Box sx={fixedMenuLayoutStyle.routerSwitch}>

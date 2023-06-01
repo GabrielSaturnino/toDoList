@@ -86,31 +86,7 @@ export const AppNavBar = (props: IAppNavBar) => {
 	return (
 		<AppBar position="static" enableColorOnDark>
 			<Container sx={fixedMenuLayoutStyle.containerFixedMenu}>
-				<HomeIconButton navigate={navigate} />
-				<Toolbar sx={fixedMenuLayoutStyle.toolbarFixedMenu}>
-					<Box
-						sx={{
-							width: '100%',
-							display: 'flex',
-							flexDirection: 'row',
-							justifyContent: 'flex-end'
-						}}>
-						{(Modules.getAppMenuItemList() || [])
-							.filter((item: IAppMenu | null) => !item?.isProtected || (user && user.roles?.indexOf('Publico') === -1))
-							.map((menuData, ind) => (
-								<Button
-									variant={pathIndex !== ind ? 'outlined' : 'contained'}
-									sx={{
-										...appNavBarStyle.buttonMenuItem,
-										color: pathIndex !== ind ? appStyle.secondaryColor : '#FFF'
-									}}
-									key={menuData?.path}
-									onClick={() => navigate(menuData?.path as string)}>
-									{menuData?.name}
-								</Button>
-							))}
-					</Box>
-				</Toolbar>
+
 			</Container>
 		</AppBar>
 	);

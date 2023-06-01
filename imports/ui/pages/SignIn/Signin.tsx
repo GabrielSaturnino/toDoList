@@ -12,6 +12,7 @@ import { signinStyle } from './SigninStyle';
 import { Box } from '@mui/material';
 import { FixedMenuLayoutContext } from '../../layouts/FixedMenuLayout';
 import { IUserProfile } from '/imports/userprofile/api/UserProfileSch';
+import Typography from '@mui/material/Typography';
 
 interface ISignIn {
 	showNotification: (options?: Object) => void;
@@ -105,7 +106,7 @@ export const SignIn = (props: ISignIn) => {
 	};
 
 	React.useEffect(() => {
-		if (!!user && !!user._id) navigate('/');
+		if (!!user && !!user._id) navigate('/meuModulo');
 	}, [user]);
 
 	React.useEffect(() => {
@@ -114,87 +115,58 @@ export const SignIn = (props: ISignIn) => {
 
 	return (
 		<>
-			<Container sx={{ width: '100%', maxWidth: 400 }}>
+			<Container sx={signinStyle.containerSignIn}>
 				<Box
-					sx={{
-						display: 'flex',
-						flexDirection: 'column',
-						justifyContent: 'center',
-						alignItems: 'center'
-					}}>
+					sx={signinStyle.subContainerSignIn}>
 					<Box>
-						<h2 style={signinStyle.labelAccessSystem}>
-							<img src="/images/wireframe/logo.png" style={signinStyle.imageLogo} />
-							<span>Acessar o sistema</span>
-						</h2>
+						<Typography sx={signinStyle.labelAccessSystem} variant="h1" gutterBottom>
+							ToDo List
+						</Typography>
+						<Box sx={signinStyle.containerSubtitle}>
+							<Typography sx={signinStyle.containerTextSubtitle} variant="body1" gutterBottom>
+								Boas-vindas a sua lista de tarefas.
+							</Typography>
+							<Typography sx={signinStyle.containerTextSubtitle} variant="body1" gutterBottom>
+								Insira seu e-mail e senha para efetuar o login:
+							</Typography>
+						</Box>
+
 						<SimpleForm
 							schema={{
 								email: { type: 'String', label: 'Email', optional: false },
 								password: { type: 'String', label: 'Senha', optional: false }
 							}}
 							onSubmit={handleSubmit}>
-							<Box>
-								<TextField label="Email" fullWidth={true} name="email" type="email" placeholder="Digite seu email" />
+
+							<Box sx={signinStyle.inputsBox}>
+								<TextField sx={signinStyle.inputs} label="Email" fullWidth={true} name="email" type="email" placeholder="Digite seu email" />
+
 								<TextField
+									sx={signinStyle.inputsComShadow}
 									label="Senha"
 									fullWidth={true}
 									name="password"
 									placeholder="Digite sua senha"
 									type="password"
 								/>
-								<Box sx={signinStyle.containerButtonOptions}>
-									<Button id="forgotPassword" color={'secondary'} onClick={() => navigate('/password-recovery')}>
-										Esqueci a minha senha
-									</Button>
-									<Button id="submit" variant={'outlined'} color={'primary'}>
-										Entrar
-									</Button>
-								</Box>
+								<Button sx={signinStyle.buttonEntrar} id="submit" variant={'contained'} color={'primary'}>
+									Entrar
+								</Button>
 							</Box>
 						</SimpleForm>
-						<Box style={signinStyle.containerRouterSignUp}>
-							<Button id="newUser" color={'secondary'} onClick={() => navigate('/signup')}>
-								É novo por aqui? Clique aqui para se cadastrar!
-							</Button>
-						</Box>
-						<Box
-							key="loginoptions"
-							style={{
-								paddingRight: 5,
-								width: '102%',
-								margin: 0,
-								padding: 0,
-								display: 'flex',
-								flexDirection: 'column'
-							}}>
-							<Box key="divBtnGoogle" sx={{ width: '100%' }}>
-								<SocialLoginButton
-									key="btnGoogle"
-									iconClass={'google icon'}
-									onLogin={loginGoogle}
-									buttonText={'Login pelo Google'}
-									iconOnly={false}
-									customCss={{
-										background: '#dd4b39',
-										width: '100%',
-										cursor: 'pointer'
-									}}
-								/>
-							</Box>
-							<Box key="divBtnFaceboook" style={{ width: '100%' }}>
-								<SocialLoginButton
-									key="btnFaceboook"
-									iconClass={'facebook icon'}
-									onLogin={loginFacebook}
-									buttonText={'Login pelo Facebook'}
-									iconOnly={false}
-									customCss={{
-										background: '#3B5998',
-										width: '100%',
-										cursor: 'pointer'
-									}}
-								/>
-							</Box>
+
+						<Box sx={signinStyle.boxFinal}>
+							<Typography sx={signinStyle.boxFinalTypograph} variant="body2" gutterBottom>
+								Esqueceu sua senha? <Typography sx={signinStyle.boxFinalBtn} variant="caption" display={'inline-block'} id="forgotPassword" color={'secondary'} onClick={() => navigate('/password-recovery')}>
+									Clique aqui
+								</Typography>
+							</Typography>
+
+							<Typography sx={signinStyle.boxFinalTypograph} variant="body2" gutterBottom>
+								Novo por aqui? <Typography sx={signinStyle.boxFinalBtn} variant="caption" display={'inline-block'} id="newUser" color={'secondary'} onClick={() => navigate('/signup')}>
+									Cadastre-se
+								</Typography>
+							</Typography>
 						</Box>
 					</Box>
 				</Box>

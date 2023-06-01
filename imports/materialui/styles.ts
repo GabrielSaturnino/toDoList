@@ -18,7 +18,7 @@ import { isMobile } from '/imports/libs/deviceVerify';
 import React from 'react';
 
 // Cores modo claro
-const primariaClara = '#5a9902';
+const primariaClara = '#C4C4C4';
 const primariaEscura = '#307000';
 const secundariaClara = '#2182C0';
 const secundariaEscura = '#0272BA';
@@ -90,7 +90,7 @@ const fontFamily = "'Lexend Deca', sans-serif";
 const h1 = (fontScale: number) => ({
     fontFamily: fontFamily,
     fontSize: 74 * fontScale,
-    fontWeight: 700,
+    fontWeight: 900,
     lineHeight: '84px',
     letterSpacing: '0.02rem',
     '@media screen and (max-width: 1367px)': {

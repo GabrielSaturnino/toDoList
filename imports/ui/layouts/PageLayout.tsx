@@ -1,5 +1,6 @@
 import React from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import { useTheme } from '@mui/material/styles';
 import { Box, Button, Container, Typography } from '@mui/material';
 
@@ -25,6 +26,7 @@ export const PageLayout = (props: IPageLayout) => {
 				display: 'flex',
 				flexDirection: 'column',
 				overflowX: 'hidden',
+				background: 'red',
 				maxHeight: '100%'
 			}}>
 			{!hiddenTitleBar ? (
@@ -34,6 +36,7 @@ export const PageLayout = (props: IPageLayout) => {
 						zIndex: 2,
 						top: 0,
 						left: 0,
+						height: '75px',
 						width: '100%',
 						backgroundColor: theme.palette.primary.main
 					}}>
@@ -47,43 +50,28 @@ export const PageLayout = (props: IPageLayout) => {
 							justifyContent: 'space-between',
 							alignItems: 'center'
 						}}>
-						<Box
+						<Typography
+							component={'p'}
 							sx={{
+								position: 'absolute',
+								top: 15,
+								left: 190,
 								display: 'flex',
+								fontSize: '1.875rem',
+								fontWeight: 900,
+								fontStretch: 'normal',
+								fontStyle: 'normal',
+								lineHeight: '35.16px',
+								letterSpacing: '0.78px',
+								textAlign: 'center',
+								color: '#000000',
+								textTransform: 'none',
 								flexDirection: 'row',
-								alignItems: 'center'
+								alignItems: 'center',
+								textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'
 							}}>
-							{(onBack || navigate) && (
-								<Button
-									onClick={() => {
-										if (onBack) {
-											onBack();
-										} else {
-											navigate?.goBack();
-										}
-									}}>
-									<ArrowBackIcon style={{ width: 20, height: 20 }} />
-								</Button>
-							)}
-							<Typography
-								component={'p'}
-								sx={{
-									display: 'flex',
-									fontSize: '15px',
-									fontWeight: 'bold',
-									fontStretch: 'normal',
-									fontStyle: 'normal',
-									lineHeight: 1.2,
-									letterSpacing: '0.78px',
-									textAlign: 'center',
-									color: '#ffffff',
-									textTransform: 'none',
-									flexDirection: 'row',
-									alignItems: 'center'
-								}}>
-								{title || 'SEM TITULO'}
-							</Typography>
-						</Box>
+							{title || 'SEM TITULO'}
+						</Typography>
 						<Box
 							sx={{
 								display: 'flex',
@@ -114,7 +102,7 @@ export const PageLayout = (props: IPageLayout) => {
 						flexDirection: 'column',
 						justifyContent: 'flex-start',
 						width: '100%',
-						flex: 1,
+						flex: 0,
 						padding: 8,
 						backgroundColor: theme.palette.background.default
 					}}>

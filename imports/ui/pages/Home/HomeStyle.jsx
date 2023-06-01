@@ -1,14 +1,14 @@
 /*!
 
- =========================================================
+=========================================================
  * Material Dashboard React - v1.0.0 based on Material Dashboard - v1.2.0
- =========================================================
+=========================================================
 
  * Product Page: http://www.creative-tim.com/product/material-dashboard-react
  * Copyright 2018 Creative Tim (http://www.creative-tim.com)
  * Licensed under MIT (https://github.com/creativetimofficial/material-dashboard-react/blob/master/LICENSE.md)
 
- =========================================================
+=========================================================
 
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
@@ -18,23 +18,42 @@ import { isMobile } from '/imports/libs/deviceVerify';
 
 const homeStyles = {
     title: {
-        fontSize: isMobile ? '20px' : '30px',
-        paddingTop: isMobile ? '20px' : '20px',
-        paddingBottom: isMobile ? '20px' : '20px',
-        fontWeight: isMobile ? '500' : '500',
+        marginTop: '96px',
+        fontSize: '3.625rem',
+        height: '58px',
+        fontWeight: 700,
+        lineHeight: '67.97px'
+    },
+    desc: {
+        marginTop: '31px',
+        height: '91px',
+        fontWeight: 400,
+        fontSize: '1.125rem',
+        lineHeight: '21.09px'
     },
     subTitle: {
-        fontSize: isMobile ? '15px' : '25px',
-        paddingTop: isMobile ? '10px' : '10px',
-        paddingBottom: isMobile ? '20px' : '20px',
-        fontWeight: isMobile ? '300' : '300',
-        textAlign: 'justify',
-        textJustify: 'inter-word',
+        marginBottom: '29px',
+        height: '26px',
+        fontSize: '1.375rem',
+        lineHeight: '25.78px',
+        fontWeight: 700
     },
-    containerHome: {
-        marginTop: '2em',
-        maxWidth: '100%',
-        maxHeight: '100%',
+    taskContainer: {
+        height: '350px',
+        width: '100%',
+        background: 'red'
+    },
+    buttonFlex: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    buttonToTask: {
+        marginTop: '62px',
+        marginBottom: '198px',
+        width: '238px',
+        height: '50px',
+        color: 'black'
     },
 };
 
