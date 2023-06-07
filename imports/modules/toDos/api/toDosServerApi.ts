@@ -3,6 +3,7 @@ import { Recurso } from '../config/Recursos';
 import { toDosSch, IToDos } from './toDosSch';
 import { userprofileServerApi } from '/imports/userprofile/api/UserProfileServerApi';
 import { ProductServerBase } from '/imports/api/productServerBase';
+import { getUser } from '/imports/libs/getUser';
 // endregion
 
 class ToDosServerApi extends ProductServerBase<IToDos> {
@@ -15,52 +16,34 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
 
         this.addTransformedPublication(
             'toDosList',
-            (filter = {}) => {
-                return this.defaultListCollectionPublication(filter, {
-                    projection: { image: 1, title: 1, description: 1, createdby: 1 },
+            (filter = {}, options = {}) => {
+
+                const user = getUser();
+                const newFilter = { ...filter, createdby: user._id }
+                const newOptions = { ...options }
+
+                return this.defaultListCollectionPublication(newFilter, {
+                    ...newOptions,
+                    projection: { title: 1, description: 1, createdby: 1, type: 1 },
                 });
             },
+
             (doc: IToDos & { nomeUsuario: string }) => {
-                const userProfileDoc = userprofileServerApi
-                    .getCollectionInstance()
-                    .findOne({ _id: doc.createdby });
-                return { ...doc, nomeUsuario: userProfileDoc?.username };
+
+                // const userProfileDoc = userprofileServerApi.getCollectionInstance().findOne({ _id: doc.createdby });
+
+                // return { ...doc, nomeUsuario: userProfileDoc?.username };
+                return doc
             }
         );
 
-        this.addPublication('toDosDetail', (filter = {}) => {
-            return this.defaultDetailCollectionPublication(filter, {});
+        this.addPublication('toDosPublica', (filter = {}, options = {}) => {
+            return this.defaultListCollectionPublication(filter, options)
         });
 
-        this.addRestEndpoint(
-            'view',
-            (params, options) => {
-                console.log('Params', params);
-                console.log('options.headers', options.headers);
-                return { status: 'ok' };
-            },
-            ['post']
-        );
-
-        this.addRestEndpoint(
-            'view/:toDosId',
-            (params, options) => {
-                console.log('Rest', params);
-                if (params.toDosId) {
-                    return self
-                        .defaultCollectionPublication({
-                            _id: params.toDosId,
-                        })
-                        .fetch();
-                } else {
-                    return { ...params };
-                }
-            },
-            ['get'],
-            {
-                //authFunction: (_h, _p) => _p.toDosId === 'flkdsajflkasdjflsa',
-            }
-        );
+        this.addPublication('toDosPublicaConcluida', (filter = {}, options = {}) => {
+            return this.defaultListCollectionPublication(filter, options)
+        });
     }
 }
 

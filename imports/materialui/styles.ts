@@ -90,7 +90,7 @@ const fontFamily = "'Lexend Deca', sans-serif";
 const h1 = (fontScale: number) => ({
     fontFamily: fontFamily,
     fontSize: 74 * fontScale,
-    fontWeight: 900,
+    fontWeight: 700,
     lineHeight: '84px',
     letterSpacing: '0.02rem',
     '@media screen and (max-width: 1367px)': {

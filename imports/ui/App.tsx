@@ -45,7 +45,7 @@ export const App = () => {
 					setFontScale,
 					fontScale,
 					setDarkThemeMode,
-					isDarkThemeMode: !!darkThemeMode
+					isDarkThemeMode: darkThemeMode
 				}}>
 				<AppContainer />
 			</AppGeneralComponents>

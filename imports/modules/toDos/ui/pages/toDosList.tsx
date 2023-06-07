@@ -1,71 +1,150 @@
 import React, { useState } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { toDosApi } from '../../api/toDosApi';
+import { userprofileApi } from '../../../../userprofile/api/UserProfileApi';
+import { SimpleTable } from '/imports/ui/components/SimpleTable/SimpleTable';
 import _ from 'lodash';
+import Add from '@mui/icons-material/Add';
+import Delete from '@mui/icons-material/Delete';
+import Fab from '@mui/material/Fab';
+import TablePagination from '@mui/material/TablePagination';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { initSearch } from '/imports/libs/searchUtils';
-import { IDefaultContainerProps, IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
+import * as appStyle from '/imports/materialui/styles';
+import shortid from 'shortid';
+import { PageLayout } from '/imports/ui/layouts/PageLayout';
+import TextField from '/imports/ui/components/SimpleFormFields/TextField/TextField';
+import SearchDocField from '/imports/ui/components/SimpleFormFields/SearchDocField/SearchDocField';
+import { IDefaultContainerProps, IDefaultListProps, IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import { IToDos } from '../../api/toDosSch';
 import { IConfigList } from '/imports/typings/IFilterProperties';
+import { Recurso } from '../../config/Recursos';
+import { RenderComPermissao } from '/imports/seguranca/ui/components/RenderComPermisao';
+import { isMobile } from '/imports/libs/deviceVerify';
 import { showLoading } from '/imports/ui/components/Loading/Loading';
-import { AppBar } from '/imports/ui/layouts/MyAppBar';
+import { ComplexTable } from '/imports/ui/components/ComplexTable/ComplexTable';
+import ToggleField from '/imports/ui/components/SimpleFormFields/ToggleField/ToggleField';
+import { Box } from '@mui/material';
 import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-
-import InputAdornment from '@mui/material/InputAdornment';
-import TextField from '@mui/material/TextField';
-import SearchIcon from '@mui/icons-material/Search';
-import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import CloseIcon from '@mui/icons-material/Close';
-
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-
+import SearchIcon from '@mui/icons-material/Search';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Button from '@mui/material/Button';
+import InputAdornment from '@mui/material/InputAdornment';
+import Typography from '@mui/material/Typography';
+import { TaskCard } from '/imports/ui/components/TaskCard/TaskCard';
 import { toDosStyle } from './style/toDosListStyle';
+import { getUser } from '/imports/libs/getUser';
+import { toDosServerApi } from '../../api/toDosServerApi';
+import { Meteor } from 'meteor/meteor';
 
+interface IToDosList extends IDefaultListProps {
+	remove: (doc: IToDos) => void;
+	viewComplexTable: boolean;
+	setViewComplexTable: (_enable: boolean) => void;
+	toDoss: IToDos[];
+	toDossPrivadasCompletas: IToDos[];
+	toDossPrivadasIncompletas: IToDos[];
+	toDossPublica: IToDos[];
+	setFilter: (newFilter: Object) => void;
+	clearFilter: () => void;
+}
 
-const ToDosList = () => {
+const ToDosList = (props: IToDosList) => {
+	const {
+		user,
+		tarefasPublicas,
+		toDossPrivadasCompletas,
+		toDossPrivadasIncompletas,
+		toDoss,
+		navigate,
+		remove,
+		showDeleteDialog,
+		onSearch,
+		total,
+		loading,
+		viewComplexTable,
+		setViewComplexTable,
+		setFilter,
+		clearFilter,
+		setPage,
+		setPageSize,
+		searchBy,
+		pageProperties,
+		isMobile,
+		showModal
+	} = props;
+
 	const [value, setValue] = useState('one');
 	const [searchField, setSearchField] = useState('');
-	const [open, setOpen] = React.useState(false);
-
-	const [taskName, setTaskName] = useState('');
-	const [taskDescription, setTaskDescription] = useState('');
-
-	const [age, setAge] = React.useState('');
-
-	const handleChange = (event) => {
-		setAge(event.target.value);
-	};
-
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
-
-	const handleClose = () => {
-		setOpen(false);
-	};
+	const [andamento, setAndamento] = useState(false);
+	const [concluidas, setConcluidas] = useState(false);
 
 	const handleChangeValue = (event, newValue: string) => {
-		console.log(taskName);
-		console.log(taskDescription);
 		setValue(newValue);
+		console.log(tarefasPublicas);
 	};
 
+	const idToDos = shortid.generate();
+
+	const onClick = (_event: React.SyntheticEvent, id: string) => {
+		navigate('/toDos/view/' + id);
+	};
+
+	const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => {
+		setPage(newPage + 1);
+	};
+
+	const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setPageSize(parseInt(event.target.value, 10));
+		setPage(1);
+	};
+
+	const [text, setText] = React.useState(searchBy || '');
+
+	const change = (e: React.ChangeEvent<HTMLInputElement>) => {
+		clearFilter();
+		if (text.length !== 0 && e.target.value.length === 0) {
+			onSearch();
+		}
+		setText(e.target.value);
+	};
+	const keyPress = (_e: React.SyntheticEvent) => {
+		// if (e.key === 'Enter') {
+		if (text && text.trim().length > 0) {
+			onSearch(text.trim());
+		} else {
+			onSearch();
+		}
+		// }
+	};
+
+	const click = (_e: any) => {
+		if (text && text.trim().length > 0) {
+			onSearch(text.trim());
+		} else {
+			onSearch();
+		}
+	};
+
+	const callRemove = (doc: IToDos) => {
+		const title = 'Remover exemplo';
+		const message = `Deseja remover o exemplo "${doc.title}"?`;
+		showDeleteDialog && showDeleteDialog(title, message, doc, remove);
+	};
+
+	const handleSearchDocChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		!!e.target.value ? setFilter({ createdby: e.target.value }) : clearFilter();
+	};
+
+	// @ts-ignore
+	// @ts-ignore
 	return (
-		<>
-			<AppBar titulo='ToDo List' redirectPage='/meuModulo' />
+		// <PageLayout title={'Lista de Exemplos'} actions={[]}>
+		<Box>
 			<Box sx={toDosStyle.tabsBox}>
 				<Container>
 					<Tabs
@@ -91,6 +170,7 @@ const ToDosList = () => {
 					value={searchField}
 					onChange={e => setSearchField(e.target.value)}
 					label=""
+					name='campoBusca'
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position="start">
@@ -100,79 +180,163 @@ const ToDosList = () => {
 					}}
 					variant="standard"
 				/>
-				<Box sx={toDosStyle.buttonFlex}>
-					<Button sx={toDosStyle.buttonAddTask} variant={'contained'} color={'primary'}
-						onClick={handleClickOpen}><AddIcon /> Adicionar Tarefa</Button>
+
+				<Box sx={toDosStyle.taskTitleBox} onClick={() => setAndamento(!andamento)}>
+					{andamento ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
+
+					<Typography variant='h1' sx={toDosStyle.taskTitle}>Não Concluídas {value === 'one' ?
+						toDossPrivadasIncompletas.length : tarefasPublicas.length}</Typography>
 				</Box>
-			</Container>
 
-			<Dialog open={open} onClose={handleClose}>
-				<Box sx={{ width: '727px', height: '856px' }}>
-					<Box sx={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginLeft: '20px'
-					}}>
-						<DialogTitle>Adicionar Tarefa</DialogTitle>
-						<CloseIcon sx={{
-							cursor: 'pointer',
-							marginRight: '56px'
-						}}
-							onClick={handleClose} />
-					</Box>
-
-					<Container sx={{
-						width: '80%',
-					}}>
-
-						<DialogContent>
-							<TextField
-								autoFocus
-								margin="dense"
-								id="name"
-								label="Email Address"
-								value={taskName}
-								onChange={e => setTaskName(e.target.value)}
-								type="text"
-								fullWidth
-								variant="filled"
-							/>
-							<TextField
-								id="standard-multiline-static"
-								label="Multiline"
-								value={taskDescription}
-								onChange={e => setTaskDescription(e.target.value)}
-								multiline
-								rows={4}
-								defaultValue="Default Value"
-								variant="standard"
-							/>
-							<FormControl sx={{ m: 1, minWidth: 120 }}>
-								<InputLabel id="demo-simple-select-helper-label">Tipo</InputLabel>
-								<Select
-									labelId="demo-simple-select-helper-label"
-									id="demo-simple-select-helper"
-									value={age}
-									label="Age"
-									onChange={handleChange}
-								>
-									<MenuItem value="">
-									</MenuItem>
-									<MenuItem value={'pessoal'}>Pessoal</MenuItem>
-									<MenuItem value={'publica'}>Publica</MenuItem>
-								</Select>
-							</FormControl>
-						</DialogContent>
-					</Container>
-					<DialogActions>
-						<Box sx={toDosStyle.buttonFlex}>
-							<Button onClick={handleClose}>Salvar</Button>
+				{andamento ?
+					value === 'one' ?
+						<Box sx={toDosStyle.taskCardContainer}>
+							{
+								toDossPrivadasIncompletas.map(task => (
+									<TaskCard key={task._id} doc={task} />
+								))}
 						</Box>
-					</DialogActions>
+						:
+						<Box sx={toDosStyle.taskCardContainer}>
+							{
+								tarefasPublicas.map(task => (
+									<TaskCard key={task._id} doc={task} />
+								))}
+						</Box>
+					: ''}
+
+				<Box sx={toDosStyle.taskTitleBox} onClick={() => setConcluidas(!concluidas)}>
+					{concluidas ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
+					<Typography variant='h1' sx={toDosStyle.taskTitle}>Concluídas {toDossPrivadasCompletas.length}</Typography>
 				</Box>
-			</Dialog>
-		</>
+				{concluidas ?
+					<Box sx={toDosStyle.taskCardContainer}>
+						{
+							toDossPrivadasCompletas.map(task => (
+								<TaskCard key={task._id} doc={task} />
+							))}
+					</Box>
+					:
+					''
+				}
+
+
+			</Container>
+			{/* 			
+			{!isMobile && (
+				<ToggleField
+					label={'Habilitar ComplexTable'}
+					value={viewComplexTable}
+					onChange={(evt: { target: { value: boolean } }) => {
+						console.log('evt', evt, evt.target);
+						setViewComplexTable(evt.target.value);
+					}}
+				/>
+			)}
+			{(!viewComplexTable || isMobile) && (
+				<>
+					<TextField
+						name={'pesquisar'}
+						label={'Pesquisar'}
+						value={text}
+						onChange={change}
+						onKeyPress={keyPress}
+						placeholder="Digite aqui o que deseja pesquisa..."
+						action={{ icon: 'search', onClick: click }}
+					/>
+
+					<SimpleTable
+						schema={_.pick(
+							{
+								...toDosApi.schema,
+								nomeUsuario: { type: String, label: 'Criado por' }
+							},
+							['image', 'title', 'description', 'nomeUsuario']
+						)}
+						data={toDoss}
+						onClick={onClick}
+						actions={[{ icon: <Delete />, id: 'delete', onClick: callRemove }]}
+					/>
+				</>
+			)}
+
+			{!isMobile && viewComplexTable && (
+				<ComplexTable
+					data={toDoss}
+					schema={_.pick(
+						{
+							...toDosApi.schema,
+							nomeUsuario: { type: String, label: 'Criado por' }
+						},
+						['type', 'title', 'description', 'nomeUsuario']
+					)}
+					onRowClick={(row) => navigate('/toDos/view/' + row.id)}
+					searchPlaceholder={'Pesquisar exemplo'}
+					onDelete={callRemove}
+					onEdit={(row) => navigate('/toDos/edit/' + row._id)}
+					toolbar={{
+						selectColumns: true,
+						exportTable: { csv: true, print: true },
+						searchFilter: true
+					}}
+					onFilterChange={onSearch}
+					loading={loading}
+				/>
+			)}
+
+			<div
+				style={{
+					width: '100%',
+					display: 'flex',
+					flexDirection: 'row',
+					justifyContent: 'center'
+				}}>
+				<TablePagination
+					style={{ width: 'fit-content', overflow: 'unset' }}
+					rowsPerPageOptions={[10, 25, 50, 100]}
+					labelRowsPerPage={''}
+					component="div"
+					count={total || 0}
+					rowsPerPage={pageProperties.pageSize}
+					page={pageProperties.currentPage - 1}
+					onPageChange={handleChangePage}
+					onRowsPerPageChange={handleChangeRowsPerPage}
+					labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+					SelectProps={{
+						inputProps: { 'aria-label': 'rows per page' }
+					}}
+				/>
+			</div> */}
+
+			<Box sx={toDosStyle.buttonFlex}>
+				<RenderComPermissao recursos={[Recurso.EXAMPLE_CREATE]}>
+					<Button sx={toDosStyle.buttonAddTask} color='primary' variant={'contained'}
+						id={'add'}
+						//onClick={() => navigate(`/toDos/create/${idToDos}`)} color={'primary'}
+						onClick={() => showModal && showModal({
+							url: `/toDos/create/${idToDos}`,
+							modalOnClose: false,
+							style: {
+								position: 'absolute' as 'absolute',
+								top: '50%',
+								left: '50%',
+								transform: 'translate(-50%, -50%)',
+								maxWidth: { xs: '100vw', sm: '727px', lg: '1000px' },
+								bgcolor: 'background.paper',
+								background: 'white',
+								boxShadow: 24,
+
+								maxHeight: { xs: '100vh', sm: 'fit-content' },
+								borderRadius: { xs: '0', sm: '8px' }
+							},
+						})}
+					>
+						<AddIcon /> Adicionar Tarefa
+					</Button>
+				</RenderComPermissao>
+			</Box>
+		</Box >
+		// </PageLayout>
 	);
 };
 
@@ -219,10 +383,32 @@ export const ToDosListContainer = withTracker((props: IDefaultContainerProps) =>
 		limit,
 		skip
 	});
+	const user = getUser();
 	const toDoss = subHandle?.ready() ? toDosApi.find(filter, { sort }).fetch() : [];
 
+	// Tarefas Publicas
+	const toDossPublica = toDosApi.subscribe('toDosPublica', { type: 'publica' }, {});
+	const tarefasPublicas = toDossPublica?.ready() ? toDosApi.find({ type: 'publica' }).fetch() : [];
+
+	// Tarefas PublicasConcluida
+	const toDossPublicaConcluida = toDosApi.subscribe('toDosPublicaConcluida', { type: 'publica', complete: true }, {});
+	const tarefasPublicasConcluida = toDossPublica?.ready() ? toDosApi.find({ type: 'publica', complete: true }).fetch() : [];
+
+	//const toDossPublica = subHandle?.ready() ? toDosApi.find({ type: 'publica' }).fetch() : [];
+
+	const toDossPrivadasIncompletas =
+		subHandle?.ready() ? toDosApi.find({ createdby: user._id, type: 'pessoal', complete: false }).fetch() : [];
+
+	const toDossPrivadasCompletas =
+		subHandle?.ready() ? toDosApi.find({ type: 'pessoal', complete: true }).fetch() : [];
+
 	return {
+		showModal: props.showModal,
+		toDossPrivadasCompletas,
+		toDossPrivadasIncompletas,
 		toDoss,
+		user,
+		tarefasPublicas,
 		loading: !!subHandle && !subHandle.ready(),
 		remove: (doc: IToDos) => {
 			toDosApi.remove(doc, (e: IMeteorError) => {

@@ -50,7 +50,7 @@ const homeStyles = {
     },
     buttonToTask: {
         marginTop: '62px',
-        marginBottom: '198px',
+        marginBottom: '50px',
         width: '238px',
         height: '50px',
         color: 'black'

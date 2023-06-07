@@ -67,7 +67,7 @@ export const PasswordRecovery = (props: IDefaultContainerProps) => {
 				onSubmit={handleSubmit}>
 				<TextField label="Email" icon="user" name="email" type="email" placeholder="Digite seu email" />
 				<Box sx={passwordRecoveryStyle.containerButtonOptions}>
-					<Button color={'secondary'} onClick={() => navigate('/')}>
+					<Button color={'secondary'} onClick={() => navigate('/signin')}>
 						Voltar
 					</Button>
 					<Button id="submit" color={'primary'} variant={'outlined'}>

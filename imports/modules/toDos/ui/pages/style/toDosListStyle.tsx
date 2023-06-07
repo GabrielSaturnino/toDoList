@@ -14,7 +14,9 @@ export const toDosStyle = {
     buttonFlex: {
         width: '100%',
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        position: 'fixed',
+        bottom: 50
     },
     buttonAddTask: {
         position: 'fixed',
@@ -23,4 +25,23 @@ export const toDosStyle = {
         height: '50px',
         color: 'black'
     },
+    taskTitleBox: {
+        marginBottom: '30px',
+        marginTop: '54px',
+        display: 'flex',
+        alignItems: 'center',
+        width: '250px'
+    },
+    taskTitle: {
+        fontSize: '1.3rem',
+        lineHeight: '25px',
+        fontWeight: 700,
+        marginLeft: '27px'
+    },
+    taskCardContainer: {
+        overflowY: 'auto',
+        height: '350px',
+        borderTop: '2px solid gray',
+        borderBottom: '2px solid gray'
+    }
 }

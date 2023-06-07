@@ -77,7 +77,7 @@ export const SignUp = (props: ISignUp) => {
 			</SimpleForm>
 			<Box sx={signUpStyle.containerRouterSignIn}>
 				Já tem uma conta? Faça login clicando{' '}
-				<Link to="/" color={'secondary'}>
+				<Link to="/signin" color={'secondary'}>
 					aqui
 				</Link>
 			</Box>

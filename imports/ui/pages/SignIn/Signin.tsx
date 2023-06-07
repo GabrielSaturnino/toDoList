@@ -93,20 +93,8 @@ export const SignIn = (props: ISignIn) => {
 		}
 	};
 
-	const loginFacebook = () => {
-		Meteor.loginWithFacebook({ requestPermissions: ['public_profile', 'email'] }, (err) => {
-			callbackLogin(err);
-		});
-	};
-
-	const loginGoogle = () => {
-		Meteor.loginWithGoogle({ requestPermissions: ['profile', 'email'] }, (err) => {
-			callbackLogin(err);
-		});
-	};
-
 	React.useEffect(() => {
-		if (!!user && !!user._id) navigate('/meuModulo');
+		if (!!user && !!user._id) navigate('/');
 	}, [user]);
 
 	React.useEffect(() => {

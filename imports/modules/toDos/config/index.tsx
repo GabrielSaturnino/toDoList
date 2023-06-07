@@ -1,6 +1,6 @@
 import React from 'react';
-import { toDosRouterList } from './toDosRouters';
-import { toDosMenuItemList } from './toDosAppMenu';
+import { toDosRouterList } from './toDosrouters';
+import { toDosMenuItemList } from './toDosappmenu';
 
 export default {
     toDosRouterList,

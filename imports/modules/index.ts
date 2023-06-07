@@ -1,6 +1,5 @@
 import userprofile from '../userprofile/config';
 import example from './example/config';
-import meuModulo from './meuModulo/config';
 import toDos from './toDos/config';
 import pages from '../ui/config/index';
 import { IAppMenu, IModules, IRoute } from './modulesTypings';
@@ -15,7 +14,6 @@ class Modules implements IModules {
             ...pages.pagesRouterList,
             ...userprofile.userProfileRouterList,
             ...example.exampleRouterList,
-            ...meuModulo.meuModuloRouterList,
             ...toDos.toDosRouterList,
         ];
 
@@ -24,7 +22,6 @@ class Modules implements IModules {
             ...pages.pagesMenuItemList,
             ...userprofile.userProfileMenuItemList,
             ...example.exampleMenuItemList,
-            ...meuModulo.meuModuloMenuItemList,
             ...toDos.toDosMenuItemList,
         ];
     }

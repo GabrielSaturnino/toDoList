@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;700;900&display=swap');
+
 * {
   box-sizing: border-box;
 }
@@ -7,7 +9,7 @@ html {
   background-color: #eee;
 }
 body {
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
   height: 100%;
   margin: 0px;
   user-select: none;
@@ -34,7 +36,7 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #3e6b01;
+  background-color: #F5CDCD;
   border-radius: 20px;
   border: 3px solid #ccc;
 }

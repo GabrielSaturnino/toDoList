@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { toDosApi } from '../../api/toDosApi';
 import SimpleForm from '../../../../ui/components/SimpleForm/SimpleForm';
 import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import TextField from '/imports/ui/components/SimpleFormFields/TextField/TextField';
-import TextMaskField from '../../../../ui/components/SimpleFormFields/TextMaskField/TextMaskField';
-import RadioButtonField from '../../../../ui/components/SimpleFormFields/RadioButtonField/RadioButtonField';
 import SelectField from '../../../../ui/components/SimpleFormFields/SelectField/SelectField';
 import UploadFilesCollection from '../../../../ui/components/SimpleFormFields/UploadFiles/uploadFilesCollection';
 import ChipInput from '../../../../ui/components/SimpleFormFields/ChipInput/ChipInput';
@@ -21,151 +19,110 @@ import { IDefaultContainerProps, IDefaultDetailProps, IMeteorError } from '/impo
 import { useTheme } from '@mui/material/styles';
 import { showLoading } from '/imports/ui/components/Loading/Loading';
 
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import CloseIcon from '@mui/icons-material/Close';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+
 interface IToDosDetail extends IDefaultDetailProps {
 	toDosDoc: IToDos;
 	save: (doc: IToDos, _callback?: any) => void;
 }
 
 const ToDosDetail = (props: IToDosDetail) => {
-	const { isPrintView, screenState, loading, toDosDoc, save, navigate } = props;
+	const { isPrintView, screenState, loading, toDosDoc, save, navigate, closeComponent } = props;
+
 
 	const theme = useTheme();
 
 	const handleSubmit = (doc: IToDos) => {
+		doc.complete = 'incompleta';
 		save(doc);
 	};
 
 	return (
-		<PageLayout
-			key={'ExemplePageLayoutDetailKEY'}
-			title={
-				screenState === 'view' ? 'Visualizar exemplo' : screenState === 'edit' ? 'Editar Exemplo' : 'Criar exemplo'
-			}
-			onBack={() => navigate('/toDos')}
-			actions={[
-				!isPrintView ? (
-					<span
-						key={'ExempleDetail-spanPrintViewKEY'}
-						style={{
-							cursor: 'pointer',
-							marginRight: 10,
-							color: theme.palette.secondary.main
-						}}
-						onClick={() => {
-							navigate(`/toDos/printview/${toDosDoc._id}`);
-						}}>
-						<Print key={'ExempleDetail-spanPrintKEY'} />
-					</span>
-				) : (
-					<span
-						key={'ExempleDetail-spanNotPrintViewKEY'}
-						style={{
-							cursor: 'pointer',
-							marginRight: 10,
-							color: theme.palette.secondary.main
-						}}
-						onClick={() => {
-							navigate(`/toDos/view/${toDosDoc._id}`);
-						}}>
-						<Close key={'ExempleDetail-spanCloseKEY'} />
-					</span>
-				)
-			]}>
-			<SimpleForm
-				key={'ExempleDetail-SimpleFormKEY'}
-				mode={screenState}
-				schema={toDosApi.getSchema()}
-				doc={toDosDoc}
-				onSubmit={handleSubmit}
-				loading={loading}>
-				<ImageCompactField key={'ExempleDetail-ImageCompactFieldKEY'} label={'Imagem Zoom+Slider'} name={'image'} />
 
-				<FormGroup key={'fieldsOne'}>
-					<TextField key={'f1-tituloKEY'} placeholder="Titulo" name="title" />
-					<TextField key={'f1-descricaoKEY'} placeholder="Descrição" name="description" />
-				</FormGroup>
-				<FormGroup key={'fieldsTwo'}>
-					<SelectField key={'f2-tipoKEY'} placeholder="Selecione um tipo" name="type" />
-					<SelectField key={'f2-multiTipoKEY'} placeholder="Selecione alguns tipos" name="typeMulti" />
-				</FormGroup>
-				<FormGroup key={'fieldsThree'} {...{ formType: 'subform', name: 'contacts' }}>
-					<TextMaskField key={'f3-TelefoneKEY'} placeholder="Telefone" name="phone" />
-					<TextMaskField key={'f3-CPFKEY'} placeholder="CPF" name="cpf" />
-				</FormGroup>
-				<FormGroup key={'fieldsFour'} {...{ formType: 'subformArray', name: 'tasks' }}>
-					<TextField key={'f4-nomeTarefaKEY'} placeholder="Nome da Tarefa" name="name" />
-					<TextField key={'f4-descricaoTarefaKEY'} placeholder="Descrição da Tarefa" name="description" />
-				</FormGroup>
 
-				<SliderField key={'ExempleDetail-SliderFieldKEY'} placeholder="Slider" name="slider" />
+		// <Dialog open={open} onClose={handleClose}>
+		<Box sx={{ width: '727px', height: '700px' }}>
+			<Box sx={{
+				display: 'flex',
+				justifyContent: 'space-between',
+				alignItems: 'center',
+				marginLeft: '20px'
+			}}>
+				<DialogTitle>Adicionar Tarefa</DialogTitle>
+				<CloseIcon sx={{
+					cursor: 'pointer',
+					marginRight: '56px'
+				}}
+					onClick={() => {
+						closeComponent ? closeComponent() : navigate(`/toDos`);
+					}} />
+			</Box>
 
-				<RadioButtonField
-					key={'ExempleDetail-RadioKEY'}
-					placeholder="Opções da Tarefa"
-					name="statusRadio"
-					options={[
-						{ value: 'valA', label: 'Valor A' },
-						{ value: 'valB', label: 'Valor B' },
-						{ value: 'valC', label: 'Valor C' }
-					]}
-				/>
+			<Container sx={{
+				width: '80%',
+			}}>
 
-				<FormGroup key={'fieldsFifth'}>
-					<AudioRecorder key={'f5-audioKEY'} placeholder="Áudio" name="audio" />
-				</FormGroup>
+				<DialogContent>
+					<SimpleForm
+						key={'ExempleDetail-SimpleFormKEY'}
+						mode={screenState}
+						schema={toDosApi.getSchema()}
+						doc={toDosDoc}
+						onSubmit={handleSubmit}
+						loading={loading}>
 
-				<UploadFilesCollection
-					key={'ExempleDetail-UploadsFilesKEY'}
-					name="files"
-					label={'Arquivos'}
-					doc={{ _id: toDosDoc?._id }}
-				/>
-				<FormGroup key={'fieldsSixth'} {...{ name: 'chips' }}>
-					<ChipInput key={'f6-cipsKEY'} name="chip" placeholder="Chip" />
-				</FormGroup>
-				<div
-					key={'Buttons'}
-					style={{
-						display: 'flex',
-						flexDirection: 'row',
-						justifyContent: 'left',
-						paddingTop: 20,
-						paddingBottom: 20
-					}}>
-					{!isPrintView ? (
-						<Button
-							key={'b1'}
-							style={{ marginRight: 10 }}
-							onClick={
-								screenState === 'edit'
-									? () => navigate(`/toDos/view/${toDosDoc._id}`)
-									: () => navigate(`/toDos/list`)
-							}
-							color={'secondary'}
-							variant="contained">
-							{screenState === 'view' ? 'Voltar' : 'Cancelar'}
-						</Button>
-					) : null}
+						<FormGroup key={'fieldsOne'}>
+							<TextField key={'f1-tituloKEY'} placeholder="Titulo" name="title" />
+							<TextField key={'f1-descricaoKEY'} placeholder="Descrição" name="description" style={{ height: '100px' }} />
+						</FormGroup>
+						<FormGroup key={'fieldsTwo'}>
+							<SelectField key={'f2-tipoKEY'} placeholder="Selecione um tipo" name="type" />
+						</FormGroup>
+						<div
+							key={'Buttons'}
+							style={{
+								display: 'flex',
+								flexDirection: 'row',
+								justifyContent: 'left',
+								paddingTop: 20,
+								paddingBottom: 20
+							}}>
 
-					{!isPrintView && screenState === 'view' ? (
-						<Button
-							key={'b2'}
-							onClick={() => {
-								navigate(`/toDos/edit/${toDosDoc._id}`);
-							}}
-							color={'primary'}
-							variant="contained">
-							{'Editar'}
-						</Button>
-					) : null}
-					{!isPrintView && screenState !== 'view' ? (
-						<Button key={'b3'} color={'primary'} variant="contained" id="submit">
-							{'Salvar'}
-						</Button>
-					) : null}
-				</div>
-			</SimpleForm>
-		</PageLayout>
+							<Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+								{!isPrintView && screenState === 'view' ? (
+									<Button
+										sx={{ width: '278px', height: '50px', color: 'black', fontWeight: 700, borderRadius: '10px', marginTop: '70px' }}
+										key={'b2'}
+										onClick={() => {
+											navigate(`/toDos/edit/${toDosDoc._id}`);
+										}}
+										color={'primary'}
+										variant="contained">
+										{'Editar'}
+									</Button>
+								) : null}
+								{!isPrintView && screenState !== 'view' ? (
+									<Button
+										sx={{ width: '278px', height: '50px', color: 'black', fontWeight: 700, borderRadius: '10px', marginTop: '70px' }}
+										key={'b3'} color={'primary'} variant="contained" id="submit">
+										{'Salvar'}
+									</Button>
+								) : null}
+							</Box>
+						</div>
+					</SimpleForm>
+				</DialogContent>
+			</Container>
+
+		</Box>
+		// </Dialog>
+
+
+
 	);
 };
 
@@ -179,6 +136,7 @@ export const ToDosDetailContainer = withTracker((props: IToDosDetailContainer) =
 
 	return {
 		screenState,
+		closeComponent: props.closeComponent,
 		toDosDoc,
 		save: (doc: IToDos, _callback: () => void) => {
 			const selectedAction = screenState === 'create' ? 'insert' : 'update';
