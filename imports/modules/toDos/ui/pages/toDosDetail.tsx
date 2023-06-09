@@ -49,7 +49,6 @@ const ToDosDetail = (props: IToDosDetail) => {
 			</Box>
 
 			<Container sx={{ width: '80%' }}>
-
 				<DialogContent>
 					<SimpleForm
 						key={'ExempleDetail-SimpleFormKEY'}

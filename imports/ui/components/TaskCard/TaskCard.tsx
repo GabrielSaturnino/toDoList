@@ -11,6 +11,8 @@ import { Navigate } from 'react-router-dom';
 import { taskCardStyle } from './TaskCardStyle';
 import { IToDos } from '../../../modules/toDos/api/toDosSch';
 import { getUser } from '/imports/libs/getUser';
+import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
+import { showNotification } from '../../GeneralComponents/ShowNotification';
 
 const options = [
     'Excluir',
@@ -43,8 +45,29 @@ export const TaskCard = (props: ITaskCard) => {
         })
     }
 
+    const handleRemove = (doc: IToDos) => {
+        toDosApi.remove(doc, (e: IMeteorError) => {
+            if (!e) {
+                showNotification &&
+                    showNotification({
+                        type: 'success',
+                        title: 'Operação realizada!',
+                        description: `A tarefa foi removida com sucesso!`
+                    });
+            } else {
+                console.log('Error:', e);
+                showNotification &&
+                    showNotification({
+                        type: 'warning',
+                        title: 'Operação não realizada!',
+                        description: `Erro ao realizar a operação: ${e.reason}`
+                    });
+            }
+        });
+    }
+
     if (opt === 'Excluir') {
-        if (doc.createdby === user._id) toDosApi.remove(doc);
+        if (doc.createdby === user._id) handleRemove(doc);
         else alert('Somente o criador da tarefa pode deleta-la');
     }
 

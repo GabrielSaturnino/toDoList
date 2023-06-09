@@ -213,15 +213,21 @@ const ToDosList = (props: IToDosList) => {
 				{andamento ?
 					value === 'one' ?
 						<Box sx={toDosStyle.taskCardContainer}>
-							{privadas.map(task => (
+							{searchField !== '' ? privadas.map(task => (
 								<TaskCard key={task._id} doc={task} />
-							))}
+							)) :
+								tarefasPrivadas.map(task => (
+									<TaskCard key={task._id} doc={task} />
+								))}
 						</Box>
 						:
 						<Box sx={toDosStyle.taskCardContainer}>
-							{publicas.map(task => (
+							{searchField !== '' ? publicas.map(task => (
 								<TaskCard key={task._id} doc={task} />
-							))}
+							)) :
+								tarefasPublicas.map(task => (
+									<TaskCard key={task._id} doc={task} />
+								))}
 						</Box>
 					: ''}
 
