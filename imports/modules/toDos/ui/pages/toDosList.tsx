@@ -84,7 +84,7 @@ const ToDosList = (props: IToDosList) => {
 
 	const handleChangeValue = (event: React.SyntheticEvent, newValue: string) => {
 		setValue(newValue);
-		console.log(showDeleteDialog);
+		console.log(searchField);
 	};
 
 	const idToDos = shortid.generate();

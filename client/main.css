@@ -9,7 +9,7 @@ html {
   background-color: #eee;
 }
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: sans-serif;
   height: 100%;
   margin: 0px;
   user-select: none;
@@ -36,7 +36,7 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #F5CDCD;
+  background-color: #3e6b01;
   border-radius: 20px;
   border: 3px solid #ccc;
 }
