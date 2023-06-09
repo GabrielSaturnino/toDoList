@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { toDosApi } from '../../api/toDosApi';
 import { userprofileApi } from '../../../../userprofile/api/UserProfileApi';
@@ -81,11 +81,34 @@ const ToDosList = (props: IToDosList) => {
 	const [searchField, setSearchField] = useState('');
 	const [andamento, setAndamento] = useState(false);
 	const [concluidas, setConcluidas] = useState(false);
+	const [publicas, setPublicas] = useState(tarefasPublicas);
+	const [privadas, setPrivadas] = useState(tarefasPrivadas);
 
 	const handleChangeValue = (event: React.SyntheticEvent, newValue: string) => {
 		setValue(newValue);
-		console.log(searchField);
 	};
+
+	useEffect(() => {
+
+		let toDosBuscadasPublicas = !!searchField ?
+			tarefasPublicas.filter(task => {
+				return task.title.toLowerCase().includes(searchField.toLowerCase());
+			}) : tarefasPublicas;
+
+		let toDosBuscadasPrivadas = !!searchField ?
+			tarefasPrivadas.filter(task => {
+				return task.title.toLowerCase().includes(searchField.toLowerCase());
+			}) : tarefasPrivadas;
+
+		setPublicas(toDosBuscadasPublicas);
+		setPrivadas(toDosBuscadasPrivadas);
+	}, [searchField]);
+
+	const handleOpenContainerIncompleta = () => {
+		setAndamento(!andamento);
+		setPublicas(tarefasPublicas);
+		setPrivadas(tarefasPrivadas);
+	}
 
 	const idToDos = shortid.generate();
 
@@ -180,7 +203,7 @@ const ToDosList = (props: IToDosList) => {
 					variant="standard"
 				/>
 
-				<Box sx={toDosStyle.taskTitleBox} onClick={() => setAndamento(!andamento)}>
+				<Box sx={toDosStyle.taskTitleBox} onClick={handleOpenContainerIncompleta}>
 					{andamento ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
 
 					<Typography variant='h1' sx={toDosStyle.taskTitle}>Não Concluídas ({value === 'one' ?
@@ -190,13 +213,13 @@ const ToDosList = (props: IToDosList) => {
 				{andamento ?
 					value === 'one' ?
 						<Box sx={toDosStyle.taskCardContainer}>
-							{tarefasPrivadas.map(task => (
+							{privadas.map(task => (
 								<TaskCard key={task._id} doc={task} />
 							))}
 						</Box>
 						:
 						<Box sx={toDosStyle.taskCardContainer}>
-							{tarefasPublicas.map(task => (
+							{publicas.map(task => (
 								<TaskCard key={task._id} doc={task} />
 							))}
 						</Box>
