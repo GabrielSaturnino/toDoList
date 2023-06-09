@@ -75,17 +75,11 @@ export const AppTopMenu = (props: ILayoutProps) => {
 							:
 							<Typography sx={appTopMenuStyle.titulo} variant='h1'>ToDo List</Typography>
 						}
-						<Button
-							aria-label="account of current user"
-							aria-controls="menu-appbar"
-							aria-haspopup="true"
+						<Box
 							onClick={handleMenu}
-							color="inherit"
-							variant='text'
-							id="Perfil"
 							sx={appTopMenuStyle.containerAccountCircle}>
 							<>
-								<AccountCircle id="Perfil" name="Perfil" style={appTopMenuStyle.accountCircle} />
+								<AccountCircle id="Perfil" name="Perfil" fontSize='large' />
 								<ArrowDropDownIcon
 									style={{
 										color: theme.palette.primary.main,
@@ -93,7 +87,7 @@ export const AppTopMenu = (props: ILayoutProps) => {
 									}}
 								/>
 							</>
-						</Button>
+						</Box>
 						<Menu
 							id="menu-appbar"
 							anchorEl={anchorEl as Element}

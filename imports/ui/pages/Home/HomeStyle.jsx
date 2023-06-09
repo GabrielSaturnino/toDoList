@@ -19,29 +19,28 @@ import { isMobile } from '/imports/libs/deviceVerify';
 const homeStyles = {
     title: {
         marginTop: '96px',
-        fontSize: '3.625rem',
+        fontSize: { xl: '3.625rem', sm: '3rem', xs: '2rem' },
         height: '58px',
         fontWeight: 700,
         lineHeight: '67.97px'
     },
     desc: {
-        marginTop: '31px',
+        marginTop: { xl: '31px', xs: '50px' },
         height: '91px',
         fontWeight: 400,
-        fontSize: '1.125rem',
+        fontSize: { xl: '1.125rem', lg: '1.2rem', md: '1.3rem', sm: '1.4rem', xs: '1.3rem' },
         lineHeight: '21.09px'
     },
     subTitle: {
         marginBottom: '29px',
-        height: '26px',
-        fontSize: '1.375rem',
+        fontSize: { xl: '1.375rem', lg: '1.3rem', md: '1.3rem', sm: '1.3rem', xs: '1.3rem' },
         lineHeight: '25.78px',
         fontWeight: 700
     },
     taskContainer: {
+        borderTop: '2px solid gray',
         height: '350px',
-        width: '100%',
-        background: 'red'
+        width: '100%'
     },
     buttonFlex: {
         width: '100%',
@@ -55,6 +54,9 @@ const homeStyles = {
         height: '50px',
         color: 'black'
     },
+    teste: {
+        background: 'red'
+    }
 };
 
 export { homeStyles };

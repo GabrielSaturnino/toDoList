@@ -12,7 +12,6 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { initSearch } from '/imports/libs/searchUtils';
 import * as appStyle from '/imports/materialui/styles';
 import shortid from 'shortid';
-import { PageLayout } from '/imports/ui/layouts/PageLayout';
 import TextField from '/imports/ui/components/SimpleFormFields/TextField/TextField';
 import SearchDocField from '/imports/ui/components/SimpleFormFields/SearchDocField/SearchDocField';
 import { IDefaultContainerProps, IDefaultListProps, IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
@@ -38,17 +37,17 @@ import Typography from '@mui/material/Typography';
 import { TaskCard } from '/imports/ui/components/TaskCard/TaskCard';
 import { toDosStyle } from './style/toDosListStyle';
 import { getUser } from '/imports/libs/getUser';
-import { toDosServerApi } from '../../api/toDosServerApi';
-import { Meteor } from 'meteor/meteor';
+
 
 interface IToDosList extends IDefaultListProps {
 	remove: (doc: IToDos) => void;
 	viewComplexTable: boolean;
 	setViewComplexTable: (_enable: boolean) => void;
 	toDoss: IToDos[];
-	toDossPrivadasCompletas: IToDos[];
-	toDossPrivadasIncompletas: IToDos[];
-	toDossPublica: IToDos[];
+	tarefasPublicas: IToDos[];
+	tarefasPublicasConcluida: IToDos[];
+	tarefasPrivadas: IToDos[];
+	tarefasPrivadasConcluida: IToDos[];
 	setFilter: (newFilter: Object) => void;
 	clearFilter: () => void;
 }
@@ -57,9 +56,9 @@ const ToDosList = (props: IToDosList) => {
 	const {
 		user,
 		tarefasPublicas,
-		toDossPrivadasCompletas,
-		toDossPrivadasIncompletas,
-		toDoss,
+		tarefasPublicasConcluida,
+		tarefasPrivadas,
+		tarefasPrivadasConcluida,
 		navigate,
 		remove,
 		showDeleteDialog,
@@ -83,9 +82,9 @@ const ToDosList = (props: IToDosList) => {
 	const [andamento, setAndamento] = useState(false);
 	const [concluidas, setConcluidas] = useState(false);
 
-	const handleChangeValue = (event, newValue: string) => {
+	const handleChangeValue = (event: React.SyntheticEvent, newValue: string) => {
 		setValue(newValue);
-		console.log(tarefasPublicas);
+		console.log(showDeleteDialog);
 	};
 
 	const idToDos = shortid.generate();
@@ -184,43 +183,44 @@ const ToDosList = (props: IToDosList) => {
 				<Box sx={toDosStyle.taskTitleBox} onClick={() => setAndamento(!andamento)}>
 					{andamento ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
 
-					<Typography variant='h1' sx={toDosStyle.taskTitle}>Não Concluídas {value === 'one' ?
-						toDossPrivadasIncompletas.length : tarefasPublicas.length}</Typography>
+					<Typography variant='h1' sx={toDosStyle.taskTitle}>Não Concluídas ({value === 'one' ?
+						tarefasPrivadas.length : tarefasPublicas.length})</Typography>
 				</Box>
 
 				{andamento ?
 					value === 'one' ?
 						<Box sx={toDosStyle.taskCardContainer}>
-							{
-								toDossPrivadasIncompletas.map(task => (
-									<TaskCard key={task._id} doc={task} />
-								))}
+							{tarefasPrivadas.map(task => (
+								<TaskCard key={task._id} doc={task} />
+							))}
 						</Box>
 						:
 						<Box sx={toDosStyle.taskCardContainer}>
-							{
-								tarefasPublicas.map(task => (
-									<TaskCard key={task._id} doc={task} />
-								))}
+							{tarefasPublicas.map(task => (
+								<TaskCard key={task._id} doc={task} />
+							))}
 						</Box>
 					: ''}
 
 				<Box sx={toDosStyle.taskTitleBox} onClick={() => setConcluidas(!concluidas)}>
 					{concluidas ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
-					<Typography variant='h1' sx={toDosStyle.taskTitle}>Concluídas {toDossPrivadasCompletas.length}</Typography>
+					<Typography variant='h1' sx={toDosStyle.taskTitle}>Concluídas ({value === 'one' ?
+						tarefasPrivadasConcluida.length : tarefasPublicasConcluida.length})</Typography>
 				</Box>
 				{concluidas ?
-					<Box sx={toDosStyle.taskCardContainer}>
-						{
-							toDossPrivadasCompletas.map(task => (
+					value === 'one' ?
+						<Box sx={toDosStyle.taskCardContainer}>
+							{tarefasPrivadasConcluida.map(task => (
 								<TaskCard key={task._id} doc={task} />
 							))}
-					</Box>
-					:
-					''
-				}
-
-
+						</Box>
+						:
+						<Box sx={toDosStyle.taskCardContainer}>
+							{tarefasPublicasConcluida.map(task => (
+								<TaskCard key={task._id} doc={task} />
+							))}
+						</Box>
+					: ''}
 			</Container>
 			{/* 			
 			{!isMobile && (
@@ -387,28 +387,30 @@ export const ToDosListContainer = withTracker((props: IDefaultContainerProps) =>
 	const toDoss = subHandle?.ready() ? toDosApi.find(filter, { sort }).fetch() : [];
 
 	// Tarefas Publicas
-	const toDossPublica = toDosApi.subscribe('toDosPublica', { type: 'publica' }, {});
-	const tarefasPublicas = toDossPublica?.ready() ? toDosApi.find({ type: 'publica' }).fetch() : [];
+	const toDossPublica = toDosApi.subscribe('toDosPublica', { type: 'publica', complete: false }, {});
+	const tarefasPublicas = toDossPublica?.ready() ? toDosApi.find({ type: 'publica', complete: false }).fetch() : [];
 
-	// Tarefas PublicasConcluida
-	const toDossPublicaConcluida = toDosApi.subscribe('toDosPublicaConcluida', { type: 'publica', complete: true }, {});
+	const toDossPublicaConcluida = toDosApi.subscribe('toDosPublicaConcluida', { complete: true }, {});
 	const tarefasPublicasConcluida = toDossPublica?.ready() ? toDosApi.find({ type: 'publica', complete: true }).fetch() : [];
+
+	// Tarefas privadas
+	// Tarefas Publicas
+	const toDossPrivada = toDosApi.subscribe('toDosPublica', { type: 'pessoal', complete: false, createdby: user._id }, {});
+	const tarefasPrivadas = toDossPublica?.ready() ? toDosApi.find({ type: 'pessoal', complete: false, createdby: user._id }).fetch() : [];
+
+	const toDossPrivadaConcluida = toDosApi.subscribe('toDosPublica', { type: 'pessoal', complete: true }, {});
+	const tarefasPrivadasConcluida = toDossPublica?.ready() ? toDosApi.find({ type: 'pessoal', complete: true }).fetch() : [];
 
 	//const toDossPublica = subHandle?.ready() ? toDosApi.find({ type: 'publica' }).fetch() : [];
 
-	const toDossPrivadasIncompletas =
-		subHandle?.ready() ? toDosApi.find({ createdby: user._id, type: 'pessoal', complete: false }).fetch() : [];
-
-	const toDossPrivadasCompletas =
-		subHandle?.ready() ? toDosApi.find({ type: 'pessoal', complete: true }).fetch() : [];
-
 	return {
 		showModal: props.showModal,
-		toDossPrivadasCompletas,
-		toDossPrivadasIncompletas,
+		tarefasPublicas,
+		tarefasPublicasConcluida,
+		tarefasPrivadas,
+		tarefasPrivadasConcluida,
 		toDoss,
 		user,
-		tarefasPublicas,
 		loading: !!subHandle && !subHandle.ready(),
 		remove: (doc: IToDos) => {
 			toDosApi.remove(doc, (e: IMeteorError) => {

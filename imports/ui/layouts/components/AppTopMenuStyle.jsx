@@ -26,17 +26,14 @@ export const appTopMenuStyle = {
 	},
 	containerAccountCircle: {
 		display: 'flex',
-		flexDirection: 'row'
+		flexDirection: 'row',
+		cursor: 'pointer'
 	},
 	titulo: {
-		height: '35px',
 		fontWeight: 900,
-		fontSize: '1.875rem',
+		fontSize: { xl: '1.875rem', lg: '1.9rem', md: '1.9rem', sm: '1.9rem' },
 		lineHeight: '35px',
 		textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
 		cursor: 'pointer',
-	},
-	accountCircle: {
-		color: '#3e6b01'
 	}
 };

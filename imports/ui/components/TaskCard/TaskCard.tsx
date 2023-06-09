@@ -10,6 +10,7 @@ import { toDosApi } from '../../../modules/toDos/api/toDosApi';
 import { Navigate } from 'react-router-dom';
 import { taskCardStyle } from './TaskCardStyle';
 import { IToDos } from '../../../modules/toDos/api/toDosSch';
+import { getUser } from '/imports/libs/getUser';
 
 const options = [
     'Excluir',
@@ -24,30 +25,41 @@ interface ITaskCard {
 
 export const TaskCard = (props: ITaskCard) => {
     const { doc } = props;
-
+    const user = getUser();
 
     const [completa, setCompleta] = useState(false);
-    const [navigate, setNavigate] = useState(' ');
     const [opt, setOpt] = useState('');
     const [ver, setVer] = useState('');
 
     const handleCompleta = () => {
         setCompleta(!completa);
-        console.log(doc.complete)
+
+        const newDoc = doc.complete === true ? false : true;
+        doc.complete = newDoc;
+        console.log(doc.complete);
+
         toDosApi.update(doc, (e, r) => {
             console.log(e, r);
         })
     }
 
     if (opt === 'Excluir') {
-        toDosApi.remove(doc);
+        if (doc.createdby === user._id) toDosApi.remove(doc);
+        else alert('Somente o criador da tarefa pode deleta-la');
+    }
+
+    if (opt === 'Editar') {
+        if (doc.createdby !== user._id) {
+            alert('Somente o criador da tarefa pode edita-la');
+            setOpt('');
+        }
     }
 
     // Menu
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
-    const handleClick = (event) => {
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
@@ -63,19 +75,19 @@ export const TaskCard = (props: ITaskCard) => {
                 <Box sx={taskCardStyle.boxMain} >
                     <Box onClick={handleCompleta}>
                         <Box sx={taskCardStyle.boxCheckBox}>
-                            <Box sx={taskCardStyle.boxTaskCompleta}>{completa ? <DoneIcon color='primary' /> : ''}</Box>
+                            <Box sx={taskCardStyle.boxTaskCompleta}>{doc.complete ? <DoneIcon color='primary' /> : ''}</Box>
                         </Box>
                     </Box>
 
                     <Box sx={taskCardStyle.boxContainerColum} onClick={() => setVer(doc._id)}>
-                        {completa
+                        {doc.complete
                             ?
                             <Typography variant='h1' sx={taskCardStyle.tituloTaskCompleta}>{doc.title}</Typography>
                             :
                             <Typography variant='h1' sx={taskCardStyle.tituloTask}>{doc.title}</Typography>
                         }
 
-                        <Typography sx={taskCardStyle.criadoPor} variant='caption'>Criada por: <span style={{ borderBottom: '2px solid gray', paddingBottom: '1px' }}>Você</span> </Typography>
+                        <Typography sx={taskCardStyle.criadoPor} variant='caption'>Criada por: <span style={{ borderBottom: '2px solid gray', paddingBottom: '1px' }}>{user._id === doc.createdby ? 'Você' : doc.userName}</span> </Typography>
                     </Box>
                 </Box>
                 <Box sx={taskCardStyle.boxMenu}>

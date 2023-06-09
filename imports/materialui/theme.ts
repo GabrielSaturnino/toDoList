@@ -94,7 +94,6 @@ const getLightTheme = (props: {
                 sm: 600,
                 md: 900,
                 lg: 1200,
-                b1367: 1367,
                 xl: 1536,
             },
         },
@@ -163,10 +162,10 @@ const getLightTheme = (props: {
                 styleOverrides: {
                     root: {
                         '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows, .MuiSelect-select':
-                            {
-                                ...appStyles.caption1(1),
-                                color: appStyles.cinzaEscuro,
-                            },
+                        {
+                            ...appStyles.caption1(1),
+                            color: appStyles.cinzaEscuro,
+                        },
                         '.MuiSelect-select': {
                             color: 'black',
                             background: 'white',
@@ -199,9 +198,9 @@ const getLightTheme = (props: {
                             borderBottom: `2px solid ${appStyles.cinzaBackground}`,
                         },
                         '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within':
-                            {
-                                outline: 'none',
-                            },
+                        {
+                            outline: 'none',
+                        },
                         '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within': {
                             outline: 'none',
                         },

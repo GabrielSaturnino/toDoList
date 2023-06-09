@@ -10,10 +10,9 @@
     "screenshotsFolder": ".cypress/screenshots",
     "supportFile": ".cypress/support",
     "baseUrl": "https://develop.es.synergia.dcc.ufmg.br/#/",
-   "reporter": "junit",
+    "reporter": "junit",
     "reporterOptions": {
         "mochaFile": ".cypress/results/cypress-report.xml",
         "toConsole": true
     }
-
-  }
+}

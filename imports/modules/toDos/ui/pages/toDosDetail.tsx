@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { toDosApi } from '../../api/toDosApi';
 import SimpleForm from '../../../../ui/components/SimpleForm/SimpleForm';
@@ -6,14 +6,6 @@ import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import TextField from '/imports/ui/components/SimpleFormFields/TextField/TextField';
 import SelectField from '../../../../ui/components/SimpleFormFields/SelectField/SelectField';
-import UploadFilesCollection from '../../../../ui/components/SimpleFormFields/UploadFiles/uploadFilesCollection';
-import ChipInput from '../../../../ui/components/SimpleFormFields/ChipInput/ChipInput';
-import SliderField from '/imports/ui/components/SimpleFormFields/SliderField/SliderField';
-import AudioRecorder from '/imports/ui/components/SimpleFormFields/AudioRecorderField/AudioRecorder';
-import ImageCompactField from '/imports/ui/components/SimpleFormFields/ImageCompactField/ImageCompactField';
-import Print from '@mui/icons-material/Print';
-import Close from '@mui/icons-material/Close';
-import { PageLayout } from '/imports/ui/layouts/PageLayout';
 import { IToDos } from '../../api/toDosSch';
 import { IDefaultContainerProps, IDefaultDetailProps, IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import { useTheme } from '@mui/material/styles';
@@ -24,6 +16,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import { getUser } from '/imports/libs/getUser';
+import { toDosStyleDetails } from './style/toDosListStyle';
 
 interface IToDosDetail extends IDefaultDetailProps {
 	toDosDoc: IToDos;
@@ -35,36 +29,26 @@ const ToDosDetail = (props: IToDosDetail) => {
 
 
 	const theme = useTheme();
+	const user = getUser();
 
 	const handleSubmit = (doc: IToDos) => {
-		doc.complete = 'incompleta';
+		doc.complete = false;
+		doc.userName = user.username;
 		save(doc);
+		closeComponent ? closeComponent() : navigate(`/toDos`);
 	};
 
 	return (
-
-
-		// <Dialog open={open} onClose={handleClose}>
-		<Box sx={{ width: '727px', height: '700px' }}>
-			<Box sx={{
-				display: 'flex',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				marginLeft: '20px'
-			}}>
+		<Box sx={toDosStyleDetails.boxPrincipal}>
+			<Box sx={toDosStyleDetails.boxFlex}>
 				<DialogTitle>Adicionar Tarefa</DialogTitle>
-				<CloseIcon sx={{
-					cursor: 'pointer',
-					marginRight: '56px'
-				}}
+				<CloseIcon sx={{ cursor: 'pointer', marginRight: '56px' }}
 					onClick={() => {
 						closeComponent ? closeComponent() : navigate(`/toDos`);
 					}} />
 			</Box>
 
-			<Container sx={{
-				width: '80%',
-			}}>
+			<Container sx={{ width: '80%' }}>
 
 				<DialogContent>
 					<SimpleForm
@@ -82,47 +66,24 @@ const ToDosDetail = (props: IToDosDetail) => {
 						<FormGroup key={'fieldsTwo'}>
 							<SelectField key={'f2-tipoKEY'} placeholder="Selecione um tipo" name="type" />
 						</FormGroup>
-						<div
+						<Box
 							key={'Buttons'}
-							style={{
-								display: 'flex',
-								flexDirection: 'row',
-								justifyContent: 'left',
-								paddingTop: 20,
-								paddingBottom: 20
-							}}>
+							sx={toDosStyleDetails.boxButtons}>
 
-							<Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-								{!isPrintView && screenState === 'view' ? (
-									<Button
-										sx={{ width: '278px', height: '50px', color: 'black', fontWeight: 700, borderRadius: '10px', marginTop: '70px' }}
-										key={'b2'}
-										onClick={() => {
-											navigate(`/toDos/edit/${toDosDoc._id}`);
-										}}
-										color={'primary'}
-										variant="contained">
-										{'Editar'}
-									</Button>
-								) : null}
+							<Box sx={toDosStyleDetails.boxSalvar}>
 								{!isPrintView && screenState !== 'view' ? (
 									<Button
-										sx={{ width: '278px', height: '50px', color: 'black', fontWeight: 700, borderRadius: '10px', marginTop: '70px' }}
+										sx={toDosStyleDetails.btnSalvar}
 										key={'b3'} color={'primary'} variant="contained" id="submit">
 										{'Salvar'}
 									</Button>
 								) : null}
 							</Box>
-						</div>
+						</Box>
 					</SimpleForm>
 				</DialogContent>
 			</Container>
-
 		</Box>
-		// </Dialog>
-
-
-
 	);
 };
 
@@ -142,7 +103,6 @@ export const ToDosDetailContainer = withTracker((props: IToDosDetailContainer) =
 			const selectedAction = screenState === 'create' ? 'insert' : 'update';
 			toDosApi[selectedAction](doc, (e: IMeteorError, r: string) => {
 				if (!e) {
-					navigate(`/toDos/view/${screenState === 'create' ? r : doc._id}`);
 					showNotification &&
 						showNotification({
 							type: 'success',

@@ -4,7 +4,10 @@ export const taskCardStyle = {
         justifyContent: 'space-between',
         width: '100%',
         height: '70px',
-        borderBottom: '2px solid gray'
+        borderBottom: '2px solid gray',
+        '&:hover': {
+            background: '#afadad'
+        }
     },
     boxMain: {
         display: 'flex',
@@ -29,14 +32,14 @@ export const taskCardStyle = {
         flexDirection: 'column'
     },
     tituloTask: {
-        fontSize: '1.1rem',
-        lineHeight: '21px',
+        fontSize: { xl: '1.1rem', lg: '1.1rem', md: '1.1rem', sm: '1.1rem', xs: '1.1rem' },
+        lineHeight: { xl: '21px', lg: '15px', md: '15px', sm: '15px', xs: '15px' },
         fontWeigth: 500
     },
     tituloTaskCompleta: {
         textDecoration: 'line-through',
-        fontSize: '1.1rem',
-        lineHeight: '21px',
+        fontSize: { xl: '1.1rem', lg: '1.1rem', md: '1.1rem', sm: '1.1rem', xs: '1.1rem' },
+        lineHeight: { xl: '21px', lg: '15px', md: '15px', sm: '15px', xs: '15px' },
         fontWeigth: 500
     },
     criadoPor: {

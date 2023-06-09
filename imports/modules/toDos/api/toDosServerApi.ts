@@ -37,13 +37,20 @@ class ToDosServerApi extends ProductServerBase<IToDos> {
             }
         );
 
+        this.addPublication('toDosHome', (filter = {}, options = {}) => {
+            return this.defaultCollectionPublication(filter, options);
+        })
+
         this.addPublication('toDosPublica', (filter = {}, options = {}) => {
-            return this.defaultListCollectionPublication(filter, options)
+            return this.defaultListCollectionPublication(filter, options);
         });
 
         this.addPublication('toDosPublicaConcluida', (filter = {}, options = {}) => {
-            return this.defaultListCollectionPublication(filter, options)
+            let item = this.defaultListCollectionPublication(filter, options);
+            console.log('meu item ' + item);
+            return (item);
         });
+
     }
 }
 

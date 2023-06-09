@@ -13,6 +13,12 @@ export const toDosSch = {
         defaultValue: '',
         optional: true,
     },
+    userName: {
+        type: String,
+        label: 'username',
+        defaultValue: '',
+        optional: false,
+    },
     type: {
         type: String,
         label: 'Tipo',
@@ -34,6 +40,7 @@ export const toDosSch = {
 export interface IToDos extends IDoc {
     title: string;
     description: string;
+    userName: string;
     type: string;
     complete: Boolean;
 }

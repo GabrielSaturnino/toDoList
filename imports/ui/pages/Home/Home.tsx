@@ -6,8 +6,20 @@ import Container from '@mui/material/Container';
 import { homeStyles } from './HomeStyle';
 import { Meteor } from 'meteor/meteor';
 import { Navigate } from 'react-router'
+import { TaskCard } from '../../components/TaskCard/TaskCard';
+import { toDosApi } from '/imports/modules/toDos/api/toDosApi';
+import { useTracker } from 'meteor/react-meteor-data';
 
 const Home = () => {
+
+    const { cincoUltimasTarefas } = useTracker(() => {
+        const toDosPublicas = toDosApi.subscribe('toDosHome', { type: 'publica', complete: false }, {});
+        const tarefas = toDosPublicas?.ready() ? toDosApi.find({ type: 'publica', complete: false }).fetch() : [];
+
+        const cincoUltimasTarefas = tarefas.length > 5 ? tarefas.slice(-5) : tarefas;
+        return { cincoUltimasTarefas };
+    });
+
     const [redirect, setRedirect] = useState(false);
     const currentUser = Meteor.user();
     return (
@@ -26,7 +38,9 @@ const Home = () => {
                 </Typography>
 
                 <Box sx={homeStyles.taskContainer}>
-                    Aqui vão as tasks
+                    {cincoUltimasTarefas.map(task => (
+                        <TaskCard key={task._id} doc={task} />
+                    ))}
                 </Box>
 
                 <Box sx={homeStyles.buttonFlex}>

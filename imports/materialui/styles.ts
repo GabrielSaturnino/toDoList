@@ -84,13 +84,13 @@ const color2dark = '#8d342d';
 const color3dark = '#153116';
 
 //Família de Fontes
-const fontFamily = "'Lexend Deca', sans-serif";
+const fontFamily = "'Lexend Deca', roboto, sans-serif";
 
 // Tipografia
 const h1 = (fontScale: number) => ({
     fontFamily: fontFamily,
     fontSize: 74 * fontScale,
-    fontWeight: 700,
+    fontWeight: 900,
     lineHeight: '84px',
     letterSpacing: '0.02rem',
     '@media screen and (max-width: 1367px)': {
