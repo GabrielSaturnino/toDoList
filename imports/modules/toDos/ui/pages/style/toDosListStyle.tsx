@@ -48,7 +48,7 @@ export const toDosStyle = {
 
 export const toDosStyleDetails = {
     boxPrincipal: {
-        width: '727px',
+        width: { xl: '727px' },
         height: '700px'
     },
     boxFlex: {
