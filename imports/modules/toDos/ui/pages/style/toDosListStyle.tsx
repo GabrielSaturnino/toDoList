@@ -97,7 +97,8 @@ export const toDosView = {
     },
     boxConteudo: {
         marginBottom: '4.25rem',
-        display: 'flex'
+        display: 'flex',
+        alignItems: 'flex-start',
     },
     boxCompletarTask: {
         height: '26px',
@@ -140,6 +141,13 @@ export const toDosView = {
         fontWeight: 700,
         fontSize: '1.12rem',
         lineHeight: '21px',
-        color: 'black'
+        color: 'black',
+        marginBottom: '31px',
+    },
+    criadoPor: {
+        fontWeight: 500,
+        fontSize: '0.875rem',
+        lineHeight: '16px',
+        color: '#999999'
     }
 }

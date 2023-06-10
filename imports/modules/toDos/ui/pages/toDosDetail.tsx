@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DoneIcon from '@mui/icons-material/Done';
 import { withTracker } from 'meteor/react-meteor-data';
 import { toDosApi } from '../../api/toDosApi';
 import SimpleForm from '../../../../ui/components/SimpleForm/SimpleForm';
@@ -39,7 +40,7 @@ const ToDosDetail = (props: IToDosDetail) => {
 		setCompleta(!completa);
 
 		const newDoc = documento[0]?.complete === true ? false : true;
-		documento[0]?.complete = newDoc;
+		documento[0].complete = newDoc;
 
 		toDosApi.update(documento[0], (e, r) => {
 			console.log(e, r);
@@ -52,6 +53,11 @@ const ToDosDetail = (props: IToDosDetail) => {
 		save(doc);
 		closeComponent ? closeComponent() : navigate(`/toDos`);
 	};
+
+	const handleRedirectToEdit = () => {
+		if (user._id === documento[0]?.createdby) navigate(`/toDos/edit/${documento[0]?._id}`);
+		else alert('Somente o criador da tarefa pode edita-la!');
+	}
 
 	return (
 		<>
@@ -109,7 +115,9 @@ const ToDosDetail = (props: IToDosDetail) => {
 					</Box>
 					<Container sx={{ marginTop: '46px' }}>
 						<Box sx={toDosView.boxConteudo}>
-							<Box sx={toDosView.boxCompletarTask} onClick={handleCompleta}></Box>
+							<Box sx={toDosView.boxCompletarTask} onClick={handleCompleta}>
+								{documento[0]?.complete ? <DoneIcon color='primary' /> : ''}
+							</Box>
 							<Typography variant='h1' sx={toDosView.tipografiaTitulo}> {documento[0]?.title} </Typography>
 						</Box>
 						<Box sx={{ height: '17rem' }}>
@@ -126,7 +134,45 @@ const ToDosDetail = (props: IToDosDetail) => {
 							<Button
 								variant="contained"
 								color='primary'
+								onClick={handleRedirectToEdit}
 								sx={toDosView.btnEditar}>Editar</Button>
+						</Box>
+						<Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+							<Typography variant='body2' sx={toDosView.criadoPor}>Criado por: {documento[0]?.userName}</Typography></Box>
+					</Container>
+				</Box>
+			}
+
+			{screenState === 'edit' &&
+				<Box sx={toDosView.boxMain}>
+					<Box sx={toDosView.boxFlexIcon}>
+						<CloseIcon sx={toDosView.icon}
+							onClick={() => {
+								closeComponent ? closeComponent() : navigate(`/toDos`);
+							}} />
+					</Box>
+					<Container sx={{ marginTop: '46px' }}>
+						<Box sx={toDosView.boxConteudo}>
+							<Box sx={toDosView.boxCompletarTask} onClick={handleCompleta}>
+								{documento[0]?.complete ? <DoneIcon color='primary' /> : ''}
+							</Box>
+							<Typography variant='h1' sx={toDosView.tipografiaTitulo}> {documento[0]?.title} </Typography>
+						</Box>
+						<Box sx={{ height: '17rem' }}>
+							<Typography variant='h2' sx={toDosView.tipografiaDesc}> Descrição </Typography>
+
+							<Typography variant='body1' sx={toDosView.tipografiaDaDescricao}> {documento[0]?.description} </Typography>
+						</Box>
+						<Box>
+							<Typography variant='h2' sx={toDosView.tipografiaTipo}> Tipo </Typography>
+
+							<Typography variant='body1' sx={toDosView.tipografiaDoTipo}> {documento[0]?.type} </Typography>
+						</Box>
+						<Box sx={{ display: 'flex', justifyContent: 'center' }}>
+							<Button
+								variant="contained"
+								color='primary'
+								sx={toDosView.btnEditar}>Salvar</Button>
 						</Box>
 					</Container>
 				</Box>

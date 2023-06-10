@@ -28,6 +28,7 @@ interface ITaskCard {
 export const TaskCard = (props: ITaskCard) => {
     const { doc } = props;
     const user = getUser();
+    const id: string = doc._id;
 
     const [completa, setCompleta] = useState(false);
     const [opt, setOpt] = useState('');
@@ -92,7 +93,7 @@ export const TaskCard = (props: ITaskCard) => {
     return (
         <>
             {ver != '' && <Navigate to={'/toDos/view/' + ver} />}
-            {opt === 'Editar' && <Navigate to={'/toDos/edit/' + doc._id} />}
+            {opt === 'Editar' && <Navigate to={'/toDos/edit/' + id} />}
 
             <Box sx={taskCardStyle.boxContainer}>
                 <Box sx={taskCardStyle.boxMain} >
@@ -102,7 +103,7 @@ export const TaskCard = (props: ITaskCard) => {
                         </Box>
                     </Box>
 
-                    <Box sx={taskCardStyle.boxContainerColum} onClick={() => setVer(doc._id)}>
+                    <Box sx={taskCardStyle.boxContainerColum} onClick={() => setVer(id)}>
                         {doc.complete
                             ?
                             <Typography variant='h1' sx={taskCardStyle.tituloTaskCompleta}>{doc.title}</Typography>
