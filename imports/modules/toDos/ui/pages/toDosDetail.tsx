@@ -54,6 +54,14 @@ const ToDosDetail = (props: IToDosDetail) => {
 		closeComponent ? closeComponent() : navigate(`/toDos`);
 	};
 
+	const handleUpdate = (doc: IToDos) => {
+		if (documento[0]?.createdby === user._id) {
+			documento[0].title = doc.title;
+			documento[0].description = doc.description;
+			save(documento[0]);
+		} else alert('Você não tem autorização para editar esta tarefa!');
+	}
+
 	const handleRedirectToEdit = () => {
 		if (user._id === documento[0]?.createdby) navigate(`/toDos/edit/${documento[0]?._id}`);
 		else alert('Somente o criador da tarefa pode edita-la!');
@@ -131,11 +139,13 @@ const ToDosDetail = (props: IToDosDetail) => {
 							<Typography variant='body1' sx={toDosView.tipografiaDoTipo}> {documento[0]?.type} </Typography>
 						</Box>
 						<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-							<Button
-								variant="contained"
-								color='primary'
-								onClick={handleRedirectToEdit}
-								sx={toDosView.btnEditar}>Editar</Button>
+							{documento[0]?.createdby === user._id ?
+								<Button
+									variant="contained"
+									color='primary'
+									onClick={handleRedirectToEdit}
+									sx={toDosView.btnEditar}>Editar</Button> : ''
+							}
 						</Box>
 						<Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
 							<Typography variant='body2' sx={toDosView.criadoPor}>Criado por: {documento[0]?.userName}</Typography></Box>
@@ -144,36 +154,44 @@ const ToDosDetail = (props: IToDosDetail) => {
 			}
 
 			{screenState === 'edit' &&
-				<Box sx={toDosView.boxMain}>
-					<Box sx={toDosView.boxFlexIcon}>
-						<CloseIcon sx={toDosView.icon}
+				<Box sx={toDosStyleDetails.boxPrincipal}>
+					<Box sx={toDosStyleDetails.boxFlex}>
+						<DialogTitle>Editar Tarefa</DialogTitle>
+						<CloseIcon sx={{ cursor: 'pointer', marginRight: '56px' }}
 							onClick={() => {
 								closeComponent ? closeComponent() : navigate(`/toDos`);
 							}} />
 					</Box>
-					<Container sx={{ marginTop: '46px' }}>
-						<Box sx={toDosView.boxConteudo}>
-							<Box sx={toDosView.boxCompletarTask} onClick={handleCompleta}>
-								{documento[0]?.complete ? <DoneIcon color='primary' /> : ''}
-							</Box>
-							<Typography variant='h1' sx={toDosView.tipografiaTitulo}> {documento[0]?.title} </Typography>
-						</Box>
-						<Box sx={{ height: '17rem' }}>
-							<Typography variant='h2' sx={toDosView.tipografiaDesc}> Descrição </Typography>
 
-							<Typography variant='body1' sx={toDosView.tipografiaDaDescricao}> {documento[0]?.description} </Typography>
-						</Box>
-						<Box>
-							<Typography variant='h2' sx={toDosView.tipografiaTipo}> Tipo </Typography>
+					<Container sx={{ width: '80%' }}>
+						<DialogContent>
+							<SimpleForm
+								key={'ExempleDetail-SimpleFormKEY'}
+								mode={screenState}
+								schema={toDosApi.getSchema()}
+								doc={toDosDoc}
+								onSubmit={handleUpdate}
+								loading={loading}>
 
-							<Typography variant='body1' sx={toDosView.tipografiaDoTipo}> {documento[0]?.type} </Typography>
-						</Box>
-						<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-							<Button
-								variant="contained"
-								color='primary'
-								sx={toDosView.btnEditar}>Salvar</Button>
-						</Box>
+								<FormGroup key={'fieldsOne'}>
+									<TextField key={'f1-tituloKEY'} placeholder={`${documento[0]?.title}`} name="title" />
+									<TextField key={'f1-descricaoKEY'} placeholder={`${documento[0]?.description}`} name="description" style={{ height: '100px' }} />
+								</FormGroup>
+
+								<Box
+									key={'Buttons'}
+									sx={toDosStyleDetails.boxButtons}>
+
+									<Box sx={toDosStyleDetails.boxSalvar}>
+										<Button
+											sx={toDosStyleDetails.btnSalvar}
+											key={'b3'} color={'primary'} variant="contained" id="submit">
+											{'Salvar'}
+										</Button>
+									</Box>
+								</Box>
+							</SimpleForm>
+						</DialogContent>
 					</Container>
 				</Box>
 			}

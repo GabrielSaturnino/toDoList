@@ -54,6 +54,7 @@ interface IToDosList extends IDefaultListProps {
 
 const ToDosList = (props: IToDosList) => {
 	const {
+		screenState,
 		user,
 		tarefasPublicas,
 		tarefasPublicasConcluida,
@@ -255,7 +256,6 @@ const ToDosList = (props: IToDosList) => {
 				<RenderComPermissao recursos={[Recurso.EXAMPLE_CREATE]}>
 					<Button sx={toDosStyle.buttonAddTask} color='primary' variant={'contained'}
 						id={'add'}
-						//onClick={() => navigate(`/toDos/create/${idToDos}`)} color={'primary'}
 						onClick={() => showModal && showModal({
 							url: `/toDos/create/${idToDos}`,
 							modalOnClose: false,
