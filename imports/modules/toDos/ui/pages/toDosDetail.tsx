@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { toDosApi } from '../../api/toDosApi';
 import SimpleForm from '../../../../ui/components/SimpleForm/SimpleForm';
@@ -17,19 +17,34 @@ import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { getUser } from '/imports/libs/getUser';
-import { toDosStyleDetails } from './style/toDosListStyle';
+import { toDosStyleDetails, toDosView } from './style/toDosListStyle';
+import { Typography } from '@mui/material';
+import { Height } from '@mui/icons-material';
 
 interface IToDosDetail extends IDefaultDetailProps {
 	toDosDoc: IToDos;
+	documento: IToDos[];
 	save: (doc: IToDos, _callback?: any) => void;
 }
 
 const ToDosDetail = (props: IToDosDetail) => {
-	const { isPrintView, screenState, loading, toDosDoc, save, navigate, closeComponent } = props;
-
+	const { isPrintView, screenState, loading, toDosDoc, save, navigate, closeComponent, documento } = props;
 
 	const theme = useTheme();
+
+	const [completa, setCompleta] = useState(documento[0]?.complete);
 	const user = getUser();
+
+	const handleCompleta = () => {
+		setCompleta(!completa);
+
+		const newDoc = documento[0]?.complete === true ? false : true;
+		documento[0]?.complete = newDoc;
+
+		toDosApi.update(documento[0], (e, r) => {
+			console.log(e, r);
+		})
+	}
 
 	const handleSubmit = (doc: IToDos) => {
 		doc.complete = false;
@@ -39,50 +54,85 @@ const ToDosDetail = (props: IToDosDetail) => {
 	};
 
 	return (
-		<Box sx={toDosStyleDetails.boxPrincipal}>
-			<Box sx={toDosStyleDetails.boxFlex}>
-				<DialogTitle>Adicionar Tarefa</DialogTitle>
-				<CloseIcon sx={{ cursor: 'pointer', marginRight: '56px' }}
-					onClick={() => {
-						closeComponent ? closeComponent() : navigate(`/toDos`);
-					}} />
-			</Box>
+		<>
+			{screenState === 'create' &&
+				<Box sx={toDosStyleDetails.boxPrincipal}>
+					<Box sx={toDosStyleDetails.boxFlex}>
+						<DialogTitle>Adicionar Tarefa</DialogTitle>
+						<CloseIcon sx={{ cursor: 'pointer', marginRight: '56px' }}
+							onClick={() => {
+								closeComponent ? closeComponent() : navigate(`/toDos`);
+							}} />
+					</Box>
 
-			<Container sx={{ width: '80%' }}>
-				<DialogContent>
-					<SimpleForm
-						key={'ExempleDetail-SimpleFormKEY'}
-						mode={screenState}
-						schema={toDosApi.getSchema()}
-						doc={toDosDoc}
-						onSubmit={handleSubmit}
-						loading={loading}>
+					<Container sx={{ width: '80%' }}>
+						<DialogContent>
+							<SimpleForm
+								key={'ExempleDetail-SimpleFormKEY'}
+								mode={screenState}
+								schema={toDosApi.getSchema()}
+								doc={toDosDoc}
+								onSubmit={handleSubmit}
+								loading={loading}>
 
-						<FormGroup key={'fieldsOne'}>
-							<TextField key={'f1-tituloKEY'} placeholder="Titulo" name="title" />
-							<TextField key={'f1-descricaoKEY'} placeholder="Descrição" name="description" style={{ height: '100px' }} />
-						</FormGroup>
-						<FormGroup key={'fieldsTwo'}>
-							<SelectField key={'f2-tipoKEY'} placeholder="Selecione um tipo" name="type" />
-						</FormGroup>
-						<Box
-							key={'Buttons'}
-							sx={toDosStyleDetails.boxButtons}>
+								<FormGroup key={'fieldsOne'}>
+									<TextField key={'f1-tituloKEY'} placeholder="Titulo" name="title" />
+									<TextField key={'f1-descricaoKEY'} placeholder="Descrição" name="description" style={{ height: '100px' }} />
+								</FormGroup>
+								<FormGroup key={'fieldsTwo'}>
+									<SelectField key={'f2-tipoKEY'} placeholder="Selecione um tipo" name="type" />
+								</FormGroup>
+								<Box
+									key={'Buttons'}
+									sx={toDosStyleDetails.boxButtons}>
 
-							<Box sx={toDosStyleDetails.boxSalvar}>
-								{!isPrintView && screenState !== 'view' ? (
-									<Button
-										sx={toDosStyleDetails.btnSalvar}
-										key={'b3'} color={'primary'} variant="contained" id="submit">
-										{'Salvar'}
-									</Button>
-								) : null}
-							</Box>
+									<Box sx={toDosStyleDetails.boxSalvar}>
+										<Button
+											sx={toDosStyleDetails.btnSalvar}
+											key={'b3'} color={'primary'} variant="contained" id="submit">
+											{'Salvar'}
+										</Button>
+									</Box>
+								</Box>
+							</SimpleForm>
+						</DialogContent>
+					</Container>
+				</Box>}
+
+			{screenState === 'view' &&
+				<Box sx={toDosView.boxMain}>
+					<Box sx={toDosView.boxFlexIcon}>
+						<CloseIcon sx={toDosView.icon}
+							onClick={() => {
+								closeComponent ? closeComponent() : navigate(`/toDos`);
+							}} />
+					</Box>
+					<Container sx={{ marginTop: '46px' }}>
+						<Box sx={toDosView.boxConteudo}>
+							<Box sx={toDosView.boxCompletarTask} onClick={handleCompleta}></Box>
+							<Typography variant='h1' sx={toDosView.tipografiaTitulo}> {documento[0]?.title} </Typography>
 						</Box>
-					</SimpleForm>
-				</DialogContent>
-			</Container>
-		</Box>
+						<Box sx={{ height: '17rem' }}>
+							<Typography variant='h2' sx={toDosView.tipografiaDesc}> Descrição </Typography>
+
+							<Typography variant='body1' sx={toDosView.tipografiaDaDescricao}> {documento[0]?.description} </Typography>
+						</Box>
+						<Box>
+							<Typography variant='h2' sx={toDosView.tipografiaTipo}> Tipo </Typography>
+
+							<Typography variant='body1' sx={toDosView.tipografiaDoTipo}> {documento[0]?.type} </Typography>
+						</Box>
+						<Box sx={{ display: 'flex', justifyContent: 'center' }}>
+							<Button
+								variant="contained"
+								color='primary'
+								sx={toDosView.btnEditar}>Editar</Button>
+						</Box>
+					</Container>
+				</Box>
+			}
+
+		</>
 	);
 };
 
@@ -94,8 +144,13 @@ export const ToDosDetailContainer = withTracker((props: IToDosDetailContainer) =
 	const subHandle = !!id ? toDosApi.subscribe('toDosDetail', { _id: id }) : null;
 	let toDosDoc = id && subHandle?.ready() ? toDosApi.findOne({ _id: id }) : {};
 
+	const tarefa = toDosApi.subscribe('toDosHome', { _id: id }, {});
+	const documento = tarefa?.ready() ? toDosApi.find({ _id: id }).fetch() : [];
+
 	return {
 		screenState,
+		documento,
+		loading: !tarefa?.ready(),
 		closeComponent: props.closeComponent,
 		toDosDoc,
 		save: (doc: IToDos, _callback: () => void) => {

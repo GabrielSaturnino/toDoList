@@ -45,7 +45,7 @@ const signinStyle = {
 		lineHeight: '12.5px'
 	},
 	inputsBox: {
-		width: '577px',
+		width: { xl: '577px' },
 		display: 'flex',
 		flexDirection: 'column'
 	},

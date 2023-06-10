@@ -78,3 +78,68 @@ export const toDosStyleDetails = {
         marginTop: '70px'
     }
 }
+
+export const toDosView = {
+    boxMain: {
+        width: { xl: '727px' },
+        height: { xl: '947px' },
+        border: '1px solid #C4C4C4',
+        boxShadow: '0px 1px 8px rgba(0, 0, 0, 0.2)'
+    },
+    boxFlexIcon: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        marginTop: '28px',
+    },
+    icon: {
+        cursor: 'pointer',
+        marginRight: '56px'
+    },
+    boxConteudo: {
+        marginBottom: '4.25rem',
+        display: 'flex'
+    },
+    boxCompletarTask: {
+        height: '26px',
+        width: '26px',
+        borderRadius: '50%',
+        marginRight: '15px',
+        border: '1px solid gray',
+        cursor: 'pointer',
+    },
+    tipografiaTitulo: {
+        fontWeight: 400,
+        fontSize: { xl: '1.375rem', lg: '1.375rem', md: '1.375rem', sx: '1.375rem', xs: '1.375rem' }, lineHeight: '25px'
+    },
+    tipografiaDesc: {
+        fontWeight: 'bold',
+        fontSize: { xl: '1rem', lg: '1rem', md: '1rem', sx: '1rem', xs: '1rem' }, lineHeight: '25px',
+    },
+    tipografiaDaDescricao: {
+        fontWeight: 400,
+        marginTop: '0.62rem',
+        fontSize: { xl: '1.12rem', lg: '1.12rem', md: '1.12rem', sx: '1.12rem', xs: '1.12rem' },
+        lineHeight: '1.32rem',
+        marginBottom: '4rem',
+    },
+    tipografiaTipo: {
+        fontWeight: 700,
+        fontSize: { xl: '0.87rem', lg: '0.87rem', md: '0.87rem', sx: '0.87rem', xs: '0.87rem' }, lineHeight: '16px'
+    },
+    tipografiaDoTipo: {
+        fontWeight: 400,
+        fontSize: { xl: '1.12rem', lg: '1.12rem', md: '1.12rem', sx: '1.12rem', xs: '1.12rem' },
+        lineHeight: '21px',
+        marginBottom: '4rem'
+    },
+    btnEditar: {
+        width: '278px',
+        height: '50px',
+        borderRadius: '10px',
+        border: '3px solid #C4C4C4',
+        fontWeight: 700,
+        fontSize: '1.12rem',
+        lineHeight: '21px',
+        color: 'black'
+    }
+}

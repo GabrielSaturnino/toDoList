@@ -165,7 +165,6 @@ const ToDosList = (props: IToDosList) => {
 	// @ts-ignore
 	// @ts-ignore
 	return (
-		// <PageLayout title={'Lista de Exemplos'} actions={[]}>
 		<Box>
 			<Box sx={toDosStyle.tabsBox}>
 				<Container>
@@ -251,91 +250,6 @@ const ToDosList = (props: IToDosList) => {
 						</Box>
 					: ''}
 			</Container>
-			{/* 			
-			{!isMobile && (
-				<ToggleField
-					label={'Habilitar ComplexTable'}
-					value={viewComplexTable}
-					onChange={(evt: { target: { value: boolean } }) => {
-						console.log('evt', evt, evt.target);
-						setViewComplexTable(evt.target.value);
-					}}
-				/>
-			)}
-			{(!viewComplexTable || isMobile) && (
-				<>
-					<TextField
-						name={'pesquisar'}
-						label={'Pesquisar'}
-						value={text}
-						onChange={change}
-						onKeyPress={keyPress}
-						placeholder="Digite aqui o que deseja pesquisa..."
-						action={{ icon: 'search', onClick: click }}
-					/>
-
-					<SimpleTable
-						schema={_.pick(
-							{
-								...toDosApi.schema,
-								nomeUsuario: { type: String, label: 'Criado por' }
-							},
-							['image', 'title', 'description', 'nomeUsuario']
-						)}
-						data={toDoss}
-						onClick={onClick}
-						actions={[{ icon: <Delete />, id: 'delete', onClick: callRemove }]}
-					/>
-				</>
-			)}
-
-			{!isMobile && viewComplexTable && (
-				<ComplexTable
-					data={toDoss}
-					schema={_.pick(
-						{
-							...toDosApi.schema,
-							nomeUsuario: { type: String, label: 'Criado por' }
-						},
-						['type', 'title', 'description', 'nomeUsuario']
-					)}
-					onRowClick={(row) => navigate('/toDos/view/' + row.id)}
-					searchPlaceholder={'Pesquisar exemplo'}
-					onDelete={callRemove}
-					onEdit={(row) => navigate('/toDos/edit/' + row._id)}
-					toolbar={{
-						selectColumns: true,
-						exportTable: { csv: true, print: true },
-						searchFilter: true
-					}}
-					onFilterChange={onSearch}
-					loading={loading}
-				/>
-			)}
-
-			<div
-				style={{
-					width: '100%',
-					display: 'flex',
-					flexDirection: 'row',
-					justifyContent: 'center'
-				}}>
-				<TablePagination
-					style={{ width: 'fit-content', overflow: 'unset' }}
-					rowsPerPageOptions={[10, 25, 50, 100]}
-					labelRowsPerPage={''}
-					component="div"
-					count={total || 0}
-					rowsPerPage={pageProperties.pageSize}
-					page={pageProperties.currentPage - 1}
-					onPageChange={handleChangePage}
-					onRowsPerPageChange={handleChangeRowsPerPage}
-					labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
-					SelectProps={{
-						inputProps: { 'aria-label': 'rows per page' }
-					}}
-				/>
-			</div> */}
 
 			<Box sx={toDosStyle.buttonFlex}>
 				<RenderComPermissao recursos={[Recurso.EXAMPLE_CREATE]}>
@@ -365,7 +279,6 @@ const ToDosList = (props: IToDosList) => {
 				</RenderComPermissao>
 			</Box>
 		</Box >
-		// </PageLayout>
 	);
 };
 
