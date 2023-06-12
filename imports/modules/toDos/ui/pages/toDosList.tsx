@@ -1,28 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { toDosApi } from '../../api/toDosApi';
-import { userprofileApi } from '../../../../userprofile/api/UserProfileApi';
-import { SimpleTable } from '/imports/ui/components/SimpleTable/SimpleTable';
 import _ from 'lodash';
-import Add from '@mui/icons-material/Add';
-import Delete from '@mui/icons-material/Delete';
-import Fab from '@mui/material/Fab';
-import TablePagination from '@mui/material/TablePagination';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { initSearch } from '/imports/libs/searchUtils';
-import * as appStyle from '/imports/materialui/styles';
 import shortid from 'shortid';
 import TextField from '/imports/ui/components/SimpleFormFields/TextField/TextField';
-import SearchDocField from '/imports/ui/components/SimpleFormFields/SearchDocField/SearchDocField';
 import { IDefaultContainerProps, IDefaultListProps, IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import { IToDos } from '../../api/toDosSch';
 import { IConfigList } from '/imports/typings/IFilterProperties';
 import { Recurso } from '../../config/Recursos';
 import { RenderComPermissao } from '/imports/seguranca/ui/components/RenderComPermisao';
-import { isMobile } from '/imports/libs/deviceVerify';
 import { showLoading } from '/imports/ui/components/Loading/Loading';
-import { ComplexTable } from '/imports/ui/components/ComplexTable/ComplexTable';
-import ToggleField from '/imports/ui/components/SimpleFormFields/ToggleField/ToggleField';
 import { Box } from '@mui/material';
 import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
@@ -60,21 +49,7 @@ const ToDosList = (props: IToDosList) => {
 		tarefasPublicasConcluida,
 		tarefasPrivadas,
 		tarefasPrivadasConcluida,
-		navigate,
-		remove,
-		showDeleteDialog,
-		onSearch,
-		total,
-		loading,
-		viewComplexTable,
-		setViewComplexTable,
-		setFilter,
-		clearFilter,
-		setPage,
-		setPageSize,
 		searchBy,
-		pageProperties,
-		isMobile,
 		showModal
 	} = props;
 
@@ -113,55 +88,7 @@ const ToDosList = (props: IToDosList) => {
 
 	const idToDos = shortid.generate();
 
-	const onClick = (_event: React.SyntheticEvent, id: string) => {
-		navigate('/toDos/view/' + id);
-	};
-
-	const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: number) => {
-		setPage(newPage + 1);
-	};
-
-	const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setPageSize(parseInt(event.target.value, 10));
-		setPage(1);
-	};
-
 	const [text, setText] = React.useState(searchBy || '');
-
-	const change = (e: React.ChangeEvent<HTMLInputElement>) => {
-		clearFilter();
-		if (text.length !== 0 && e.target.value.length === 0) {
-			onSearch();
-		}
-		setText(e.target.value);
-	};
-	const keyPress = (_e: React.SyntheticEvent) => {
-		// if (e.key === 'Enter') {
-		if (text && text.trim().length > 0) {
-			onSearch(text.trim());
-		} else {
-			onSearch();
-		}
-		// }
-	};
-
-	const click = (_e: any) => {
-		if (text && text.trim().length > 0) {
-			onSearch(text.trim());
-		} else {
-			onSearch();
-		}
-	};
-
-	const callRemove = (doc: IToDos) => {
-		const title = 'Remover exemplo';
-		const message = `Deseja remover o exemplo "${doc.title}"?`;
-		showDeleteDialog && showDeleteDialog(title, message, doc, remove);
-	};
-
-	const handleSearchDocChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		!!e.target.value ? setFilter({ createdby: e.target.value }) : clearFilter();
-	};
 
 	// @ts-ignore
 	// @ts-ignore
@@ -214,19 +141,19 @@ const ToDosList = (props: IToDosList) => {
 					value === 'one' ?
 						<Box sx={toDosStyle.taskCardContainer}>
 							{searchField !== '' ? privadas.map(task => (
-								<TaskCard key={task._id} doc={task} />
+								<TaskCard key={task._id} doc={task} showModal={showModal} />
 							)) :
 								tarefasPrivadas.map(task => (
-									<TaskCard key={task._id} doc={task} />
+									<TaskCard key={task._id} doc={task} showModal={showModal} />
 								))}
 						</Box>
 						:
 						<Box sx={toDosStyle.taskCardContainer}>
 							{searchField !== '' ? publicas.map(task => (
-								<TaskCard key={task._id} doc={task} />
+								<TaskCard key={task._id} doc={task} showModal={showModal} />
 							)) :
 								tarefasPublicas.map(task => (
-									<TaskCard key={task._id} doc={task} />
+									<TaskCard key={task._id} doc={task} showModal={showModal} />
 								))}
 						</Box>
 					: ''}
@@ -240,13 +167,13 @@ const ToDosList = (props: IToDosList) => {
 					value === 'one' ?
 						<Box sx={toDosStyle.taskCardContainer}>
 							{tarefasPrivadasConcluida.map(task => (
-								<TaskCard key={task._id} doc={task} />
+								<TaskCard key={task._id} doc={task} showModal={showModal} />
 							))}
 						</Box>
 						:
 						<Box sx={toDosStyle.taskCardContainer}>
 							{tarefasPublicasConcluida.map(task => (
-								<TaskCard key={task._id} doc={task} />
+								<TaskCard key={task._id} doc={task} showModal={showModal} />
 							))}
 						</Box>
 					: ''}
@@ -333,17 +260,13 @@ export const ToDosListContainer = withTracker((props: IDefaultContainerProps) =>
 	const tarefasPublicas = toDossPublica?.ready() ? toDosApi.find({ type: 'publica', complete: false }).fetch() : [];
 
 	const toDossPublicaConcluida = toDosApi.subscribe('toDosPublicaConcluida', { complete: true }, {});
-	const tarefasPublicasConcluida = toDossPublica?.ready() ? toDosApi.find({ type: 'publica', complete: true }).fetch() : [];
+	const tarefasPublicasConcluida = toDossPublicaConcluida?.ready() ? toDosApi.find({ type: 'publica', complete: true }).fetch() : [];
 
-	// Tarefas privadas
-	// Tarefas Publicas
 	const toDossPrivada = toDosApi.subscribe('toDosPublica', { type: 'pessoal', complete: false, createdby: user._id }, {});
-	const tarefasPrivadas = toDossPublica?.ready() ? toDosApi.find({ type: 'pessoal', complete: false, createdby: user._id }).fetch() : [];
+	const tarefasPrivadas = toDossPrivada?.ready() ? toDosApi.find({ type: 'pessoal', complete: false, createdby: user._id }).fetch() : [];
 
 	const toDossPrivadaConcluida = toDosApi.subscribe('toDosPublica', { type: 'pessoal', complete: true }, {});
-	const tarefasPrivadasConcluida = toDossPublica?.ready() ? toDosApi.find({ type: 'pessoal', complete: true }).fetch() : [];
-
-	//const toDossPublica = subHandle?.ready() ? toDosApi.find({ type: 'publica' }).fetch() : [];
+	const tarefasPrivadasConcluida = toDossPrivadaConcluida?.ready() ? toDosApi.find({ type: 'pessoal', complete: true }).fetch() : [];
 
 	return {
 		showModal: props.showModal,
@@ -374,45 +297,6 @@ export const ToDosListContainer = withTracker((props: IDefaultContainerProps) =>
 				}
 			});
 		},
-		viewComplexTable: viewComplexTable.get(),
-		setViewComplexTable: (enableComplexTable: boolean) => viewComplexTable.set(enableComplexTable),
-		searchBy: config.searchBy,
-		onSearch: (...params: any) => {
-			onSearchToDosTyping && clearTimeout(onSearchToDosTyping);
-			onSearchToDosTyping = setTimeout(() => {
-				config.pageProperties.currentPage = 1;
-				subscribeConfig.set(config);
-				toDosSearch.onSearch(...params);
-			}, 1000);
-		},
-		total: subHandle ? subHandle.total : toDoss.length,
-		pageProperties: config.pageProperties,
-		filter,
-		sort,
-		setPage: (page = 1) => {
-			config.pageProperties.currentPage = page;
-			subscribeConfig.set(config);
-		},
-		setFilter: (newFilter = {}) => {
-			config.filter = { ...filter, ...newFilter };
-			Object.keys(config.filter).forEach((key) => {
-				if (config.filter[key] === null || config.filter[key] === undefined) {
-					delete config.filter[key];
-				}
-			});
-			subscribeConfig.set(config);
-		},
-		clearFilter: () => {
-			config.filter = {};
-			subscribeConfig.set(config);
-		},
-		setSort: (sort = { field: 'createdat', sortAscending: true }) => {
-			config.sortProperties = sort;
-			subscribeConfig.set(config);
-		},
-		setPageSize: (size = 25) => {
-			config.pageProperties.pageSize = size;
-			subscribeConfig.set(config);
-		}
+
 	};
 })(showLoading(ToDosList));

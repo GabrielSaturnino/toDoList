@@ -14,7 +14,7 @@ class Modules implements IModules {
             ...pages.pagesRouterList,
             ...userprofile.userProfileRouterList,
             ...example.exampleRouterList,
-            ...toDos.toDosRouterList,
+            ...toDos.toDosRouterList
         ];
 
         // Create modules App Menu Item list

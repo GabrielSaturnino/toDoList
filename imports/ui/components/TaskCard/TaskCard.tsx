@@ -7,75 +7,61 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { toDosApi } from '../../../modules/toDos/api/toDosApi';
-import { Navigate } from 'react-router-dom';
 import { taskCardStyle } from './TaskCardStyle';
 import { IToDos } from '../../../modules/toDos/api/toDosSch';
 import { getUser } from '/imports/libs/getUser';
 import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 import { showNotification } from '../../GeneralComponents/ShowNotification';
-
-const options = [
-    'Excluir',
-    'Editar'
-];
+import { RenderComPermissao } from '/imports/seguranca/ui/components/RenderComPermisao';
+import { Recurso } from '/imports/modules/example/config/Recursos';
 
 const ITEM_HEIGHT = 48;
 
 interface ITaskCard {
     doc: IToDos;
+    showModal: ({ url: string; modalOnClose: Boolean; style: Object; });
 }
 
 export const TaskCard = (props: ITaskCard) => {
     const { doc } = props;
+    const showModal = props.showModal;
     const user = getUser();
     const id: string = doc._id;
 
     const [completa, setCompleta] = useState(false);
-    const [opt, setOpt] = useState('');
-    const [ver, setVer] = useState('');
 
     const handleCompleta = () => {
         setCompleta(!completa);
 
         const newDoc = doc.complete === true ? false : true;
         doc.complete = newDoc;
-        console.log(doc.complete);
 
         toDosApi.update(doc, (e, r) => {
             console.log(e, r);
         })
     }
 
-    const handleRemove = (doc: IToDos) => {
-        toDosApi.remove(doc, (e: IMeteorError) => {
-            if (!e) {
-                showNotification &&
-                    showNotification({
-                        type: 'success',
-                        title: 'Operação realizada!',
-                        description: `A tarefa foi removida com sucesso!`
-                    });
-            } else {
-                console.log('Error:', e);
-                showNotification &&
-                    showNotification({
-                        type: 'warning',
-                        title: 'Operação não realizada!',
-                        description: `Erro ao realizar a operação: ${e.reason}`
-                    });
-            }
-        });
-    }
-
-    if (opt === 'Excluir') {
-        if (doc.createdby === user._id) handleRemove(doc);
-        else alert('Somente o criador da tarefa pode deleta-la');
-    }
-
-    if (opt === 'Editar') {
-        if (doc.createdby !== user._id) {
-            alert('Somente o criador da tarefa pode edita-la');
-            setOpt('');
+    const handleRemove = () => {
+        if (doc.createdby !== user._id) alert('Somente o criador da tarefa pode deleta-la');
+        else {
+            toDosApi.remove(doc, (e: IMeteorError) => {
+                if (!e) {
+                    showNotification &&
+                        showNotification({
+                            type: 'success',
+                            title: 'Operação realizada!',
+                            description: `A tarefa foi removida com sucesso!`
+                        });
+                } else {
+                    console.log('Error:', e);
+                    showNotification &&
+                        showNotification({
+                            type: 'warning',
+                            title: 'Operação não realizada!',
+                            description: `Erro ao realizar a operação: ${e.reason}`
+                        });
+                }
+            });
         }
     }
 
@@ -92,9 +78,6 @@ export const TaskCard = (props: ITaskCard) => {
 
     return (
         <>
-            {ver != '' && <Navigate to={'/toDos/view/' + ver} />}
-            {opt === 'Editar' && <Navigate to={'/toDos/edit/' + id} />}
-
             <Box sx={taskCardStyle.boxContainer}>
                 <Box sx={taskCardStyle.boxMain} >
                     <Box onClick={handleCompleta}>
@@ -103,16 +86,35 @@ export const TaskCard = (props: ITaskCard) => {
                         </Box>
                     </Box>
 
-                    <Box sx={taskCardStyle.boxContainerColum} onClick={() => setVer(id)}>
-                        {doc.complete
-                            ?
-                            <Typography variant='h1' sx={taskCardStyle.tituloTaskCompleta}>{doc.title}</Typography>
-                            :
-                            <Typography variant='h1' sx={taskCardStyle.tituloTask}>{doc.title}</Typography>
-                        }
+                    <RenderComPermissao recursos={[Recurso.EXAMPLE_VIEW]}>
+                        <Box sx={taskCardStyle.boxContainerColum}
+                            onClick={() => showModal && showModal({
+                                url: `/toDos/view/${id}`,
+                                modalOnClose: false,
+                                style: {
+                                    position: 'absolute' as 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    maxWidth: { xs: '100vw', sm: '727px', lg: '1000px' },
+                                    bgcolor: 'background.paper',
+                                    background: 'white',
+                                    boxShadow: 24,
 
-                        <Typography sx={taskCardStyle.criadoPor} variant='caption'>Criada por: <span style={{ borderBottom: '2px solid gray', paddingBottom: '1px' }}>{user._id === doc.createdby ? 'Você' : doc.userName}</span> </Typography>
-                    </Box>
+                                    maxHeight: { xs: '100vh', sm: 'fit-content' },
+                                    borderRadius: { xs: '0', sm: '8px' }
+                                },
+                            })}>
+                            {doc.complete
+                                ?
+                                <Typography variant='h1' sx={taskCardStyle.tituloTaskCompleta}>{doc.title}</Typography>
+                                :
+                                <Typography variant='h1' sx={taskCardStyle.tituloTask}>{doc.title}</Typography>
+                            }
+
+                            <Typography sx={taskCardStyle.criadoPor} variant='caption'>Criada por: <span style={{ borderBottom: '2px solid gray', paddingBottom: '1px' }}>{user._id === doc.createdby ? 'Você' : doc.userName}</span> </Typography>
+                        </Box>
+                    </RenderComPermissao>
                 </Box>
                 <Box sx={taskCardStyle.boxMenu}>
                     <IconButton
@@ -141,14 +143,24 @@ export const TaskCard = (props: ITaskCard) => {
                             },
                         }}
                     >
-                        {options.map((option) => (
-                            <MenuItem
-                                key={option}
-                                selected={option === 'Edit'}
-                                onClick={() => setOpt(option)}>
-                                {option}
-                            </MenuItem>
-                        ))}
+                        <MenuItem onClick={handleRemove}>Excluir</MenuItem>
+                        <MenuItem onClick={() => showModal && showModal({
+                            url: `/toDos/edit/${id}`,
+                            modalOnClose: false,
+                            style: {
+                                position: 'absolute' as 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                maxWidth: { xs: '100vw', sm: '727px', lg: '1000px' },
+                                bgcolor: 'background.paper',
+                                background: 'white',
+                                boxShadow: 24,
+
+                                maxHeight: { xs: '100vh', sm: 'fit-content' },
+                                borderRadius: { xs: '0', sm: '8px' }
+                            },
+                        })}>Editar</MenuItem>
                     </Menu>
                 </Box>
             </Box >

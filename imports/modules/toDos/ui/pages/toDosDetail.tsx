@@ -20,7 +20,6 @@ import Container from '@mui/material/Container';
 import { getUser } from '/imports/libs/getUser';
 import { toDosStyleDetails, toDosView } from './style/toDosListStyle';
 import { Typography } from '@mui/material';
-import { Height } from '@mui/icons-material';
 
 interface IToDosDetail extends IDefaultDetailProps {
 	toDosDoc: IToDos;
@@ -30,8 +29,6 @@ interface IToDosDetail extends IDefaultDetailProps {
 
 const ToDosDetail = (props: IToDosDetail) => {
 	const { isPrintView, screenState, loading, toDosDoc, save, navigate, closeComponent, documento } = props;
-
-	const theme = useTheme();
 
 	const [completa, setCompleta] = useState(documento[0]?.complete);
 	const user = getUser();
@@ -122,33 +119,35 @@ const ToDosDetail = (props: IToDosDetail) => {
 							}} />
 					</Box>
 					<Container sx={{ marginTop: '46px' }}>
-						<Box sx={toDosView.boxConteudo}>
-							<Box sx={toDosView.boxCompletarTask} onClick={handleCompleta}>
-								{documento[0]?.complete ? <DoneIcon color='primary' /> : ''}
+						<DialogContent>
+							<Box sx={toDosView.boxConteudo}>
+								<Box sx={toDosView.boxCompletarTask} onClick={handleCompleta}>
+									{documento[0]?.complete ? <DoneIcon color='primary' /> : ''}
+								</Box>
+								<Typography variant='h1' sx={toDosView.tipografiaTitulo}> {documento[0]?.title} </Typography>
 							</Box>
-							<Typography variant='h1' sx={toDosView.tipografiaTitulo}> {documento[0]?.title} </Typography>
-						</Box>
-						<Box sx={{ height: '17rem' }}>
-							<Typography variant='h2' sx={toDosView.tipografiaDesc}> Descrição </Typography>
+							<Box sx={{ height: '17rem' }}>
+								<Typography variant='h2' sx={toDosView.tipografiaDesc}> Descrição </Typography>
 
-							<Typography variant='body1' sx={toDosView.tipografiaDaDescricao}> {documento[0]?.description} </Typography>
-						</Box>
-						<Box>
-							<Typography variant='h2' sx={toDosView.tipografiaTipo}> Tipo </Typography>
+								<Typography variant='body1' sx={toDosView.tipografiaDaDescricao}> {documento[0]?.description} </Typography>
+							</Box>
+							<Box>
+								<Typography variant='h2' sx={toDosView.tipografiaTipo}> Tipo </Typography>
 
-							<Typography variant='body1' sx={toDosView.tipografiaDoTipo}> {documento[0]?.type} </Typography>
-						</Box>
-						<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-							{documento[0]?.createdby === user._id ?
-								<Button
-									variant="contained"
-									color='primary'
-									onClick={handleRedirectToEdit}
-									sx={toDosView.btnEditar}>Editar</Button> : ''
-							}
-						</Box>
-						<Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-							<Typography variant='body2' sx={toDosView.criadoPor}>Criado por: {documento[0]?.userName}</Typography></Box>
+								<Typography variant='body1' sx={toDosView.tipografiaDoTipo}> {documento[0]?.type} </Typography>
+							</Box>
+							<Box sx={{ display: 'flex', justifyContent: 'center' }}>
+								{documento[0]?.createdby === user._id ?
+									<Button
+										variant="contained"
+										color='primary'
+										onClick={handleRedirectToEdit}
+										sx={toDosView.btnEditar}>Editar</Button> : ''
+								}
+							</Box>
+							<Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+								<Typography variant='body2' sx={toDosView.criadoPor}>Criado por: {documento[0]?.userName}</Typography></Box>
+						</DialogContent>
 					</Container>
 				</Box>
 			}
