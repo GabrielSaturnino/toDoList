@@ -26,7 +26,7 @@ export const TaskCard = (props: ITaskCard) => {
     const { doc } = props;
     const showModal = props.showModal;
     const user = getUser();
-    const id: string = doc._id;
+    const id = doc._id;
 
     const [completa, setCompleta] = useState(false);
 
